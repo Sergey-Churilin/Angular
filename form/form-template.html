@@ -1,6 +1,0 @@
-<form ng-submit="formCtrl.addTodo($event)">
-    <input type="text" name="title" ng-model="formCtrl.todo.title" placeholder="todo title">
-    <input type="text" name="description" ng-model="formCtrl.todo.description" placeholder="todo description">
-    <label for="isUrgent">Срочный</label><input type="checkbox" id="isUrgent" name="isUrgent" ng-model="formCtrl.todo.isUrgent" ng-checked='{{formCtrl.todo.isUrgent}}'>
-    <button type="submit">Add todo</button>
-</form>

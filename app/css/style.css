@@ -1,10 +1,16 @@
-.listWrapper{
-    width: 400px;
+.todoWrapper{
+    /*width: 400px;*/
     border: 1px solid #000;
     border-radius:10px;
     background: rgba(0, 255, 255, 0.17);
     margin-bottom: 20px;
     padding: 10px;
+}
+.todoWrapper.urgent{
+    background: rgba(205, 97, 108, 0.55);
+}
+.todoWrapper.todoDone{
+    background: rgba(15, 205, 95, 0.55);
 }
 .columnTitle{
     text-align: center;
@@ -22,25 +28,21 @@ ul{
 .list{
     margin-bottom: 10px;
 }
-.checkboxWrapper,.mainWrapper,.photo,.urgent{
-    float: left;
-}
-.urgent{
-    float: right;
-    margin-right: 20px;
-    margin-top: 16px;
+.select{
+    text-align: center;
 }
 .urgentTask{
     background: red;
 }
-.mainWrapper{
+/*.mainWrapper{
     width: 100px;
     margin-left: 10px;
-}
+}*/
 .mainWrapper .title{
     font-size: 32px;
     line-height: 32px;
     color: #333;
+    text-align: center;
 }
 .photo{
     margin-left: 170px;
@@ -49,8 +51,14 @@ ul{
 .photo img{
     width: 50px;
 }
-.columnWrapper{
-    display: flex;
-    flex-direction: row;
-    align-content: space-between;
+ul{
+    padding-left: 0;
+}
+
+.interact-icons .fa{
+    cursor: pointer;
+}
+
+.checkbox input[type=checkbox]{
+    margin-left: 0;
 }

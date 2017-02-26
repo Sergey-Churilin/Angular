@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="row">
+        <div class="col-sm-4">
+            <form ng-submit="editCtrl.updateTodo($event)">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" class="form-control" name="title" ng-model="editCtrl.todo.title"
+                           placeholder="todo title">
+                </div>
+
+                <div class="form-group">
+            <textarea class="form-control" rows="3" placeholder="Description"
+                      ng-model="editCtrl.todo.description"></textarea>
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" id="isUrgent" name="isUrgent"
+                           ng-model="editCtrl.isUrgent"
+                           ng-checked='{{editCtrl.isUrgent}}'><label for="isUrgent">Срочный </label>
+                </div>
+                <button type="submit" class="btn btn-default">Save todo</button>
+            </form>
+        </div>
+
+    </div>
+</div>

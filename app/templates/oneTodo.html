@@ -1,0 +1,25 @@
+<section class="todoWrapper" ng-class="{urgent:todo.isUrgent}">
+    <div class="row">
+        <div class="col-sm-2">
+            <input type="checkbox" ng-click="todoCtrl.makeUrgent($event,todo)" ng-checked='{{todo.isUrgent}}'>
+        </div>
+        <div class="col-sm-8">
+            <div class="mainWrapper">
+                <div class="title">{{todo.title}}</div>
+            </div>
+        </div>
+        <div class="col-sm-2 interact-icons">
+            <a ui-sref="edittodo({id:todo.id})"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+            <i class="fa fa-times" aria-hidden="true" ng-click="todoCtrl.deleteTodo(todo)"></i>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="select">
+                <select ng-model="todoCtrl.column" ng-change="todoCtrl.selectChanged(todoCtrl.column,todo)">
+                    <option ng-repeat="column in columns" value="{{column.id}}">{{column.name}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</section>

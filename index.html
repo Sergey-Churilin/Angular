@@ -3,27 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <title>Wunderlist</title>
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="app/css/style.css">
 </head>
 <body ng-app="app">
-<a ui-sref="all">all</a>
-<a ui-sref="todo">todo</a>
-<a ui-sref="inprocess">inprocess</a>
-<a ui-sref="testing">testing</a>
-<a ui-sref="done">done</a>
-<a ui-sref="addtodo">addTodo</a>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a ui-sref="all">All</a></li>
+                <li><a ui-sref="todo">Todo</a></li>
+                <li><a ui-sref="inprocess">In Process</a></li>
+                <li><a ui-sref="testing">Testing</a></li>
+                <li><a ui-sref="done">Done</a></li>
+                <li><a ui-sref="addtodo">Add Todo</a></li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
 <ui-view></ui-view>
 
-    <!--<todo-list></todo-list>-->
-
-<!--<add-todo></add-todo>-->
+<script
+        src="https://code.jquery.com/jquery-1.12.4.min.js"
+        integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+        crossorigin="anonymous"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
-<!--
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-route.js"></script>
--->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.4.2/angular-ui-router.min.js"></script>
-<script src="columns.js"></script>
-<script src="form/form.js"></script>
-<script src="app.js"></script>
+<script src="js/customScripts.js"></script>
+
+<script src="app/app.js"></script>
+<script src="app/config.js"></script>
+<script src="app/form/form.js"></script>
+<script src="app/form/addTodoDirective.js"></script>
+<script src="app/ListController.js"></script>
+<script src="app/TodoController.js"></script>
+<script src="app/ColumnController.js"></script>
+<script src="app/EditTodoController.js"></script>
+<script src="app/directives.js"></script>
+<script src="app/services.js"></script>
+<script src="app/stateFilter.js"></script>
 </body>
 </html>
