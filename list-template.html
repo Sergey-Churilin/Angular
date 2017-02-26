@@ -1,0 +1,37 @@
+<div class="columnWrapper">
+    <div class="column" ng-repeat="column in listCtrl.columns  track by $index">
+        <h2 class="columnTitle">{{column}}</h2>
+        <ul>
+            <li class="todo" ng-repeat="todo in listCtrl.todoLists">
+                <div class="listWrapper clearfix"  ng-show="todo | stateFilter:$parent.$index">
+                    <div class="clearfix">
+                        <div class="checkboxWrapper"><input type="checkbox" ng-checked='{{todo.isChecked}}'></div>
+                        <div class="mainWrapper">
+                            <div class="title">{{todo.title}}</div>
+                            <div class="day">{{todo.description}}</div>
+                            <div class="day">{{todo.status}}</div>
+                        </div>
+                        <div class="photo"><img ng-src="{{todo.photo}}" alt=""></div>
+                        <div ng-class="{{todo.isUrgent}} ? 'urgentTask urgent' : 'urgent'">
+                            <input type="checkbox" ng-click="listCtrl.makeUrgent($event,todo)" ng-checked='{{todo.isUrgent}}'>
+                        </div>
+                    </div>
+                    <div>
+                        <select name="select" id="" ng-model="column" ng-change="listCtrl.selectChanged(column,todo)" option>
+                            <option ng-repeat="colName in listCtrl.columns track by $index" value="{{colName}}" ng-selected="{{todo.statusId === $index}}">{{colName}}</option>
+                            <!--<option value="{{listCtrl.columns[0]}}" ng-selected="{{todo.statusId === 0}}">{{listCtrl.columns[0]}}</option>
+                            <option value="{{listCtrl.columns[1]}}" ng-selected="{{todo.statusId === 1}}">{{listCtrl.columns[1]}}</option>
+                            <option value="{{listCtrl.columns[2]}}" ng-selected="{{todo.statusId === 2}}">{{listCtrl.columns[2]}}</option>
+                            <option value="{{listCtrl.columns[3]}}" ng-selected="{{todo.statusId === 3}}">{{listCtrl.columns[3]}}</option>-->
+                        </select>
+                        <div>column = {{column}}</div>
+                        <!--<select name="select" id="" ng-model="listCtrl.columns[$parent.$index]" ng-change="listCtrl.selectChanged()">
+                            <option ng-repeat="colName in listCtrl.columns track by $index" value="{{colName}}" ng-selected="{{todo.statusId === $index}}">{{colName}}</option>
+                        </select>-->
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
