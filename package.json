@@ -15,5 +15,14 @@
   "bugs": {
     "url": "https://github.com/Sergey-Churilin/Angular/issues"
   },
-  "homepage": "https://github.com/Sergey-Churilin/Angular#readme"
+  "homepage": "https://github.com/Sergey-Churilin/Angular#readme",
+  "dependencies": {
+    "mongoose": "^4.8.5"
+  },
+  "devDependencies": {
+    "body-parser": "^1.16.1",
+    "express": "^4.14.1",
+    "mongoose": "^4.8.5",
+    "path": "^0.12.7"
+  }
 }

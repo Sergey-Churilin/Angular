@@ -3,7 +3,10 @@ app.controller('ListController', ['todoService','columnsService', function (todo
 
     this.todoLists = [];
     todoService.getAllTodos((data) => {
-        this.todoLists = data;
+        if(data){
+            this.todoLists = data;
+        }
+
     });
 
     this.getTodos = function (column) {
