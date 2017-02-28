@@ -9,9 +9,9 @@ app.factory('todoService', ['$http', function ($http) {
         console.log('send request')
         $http.get("/getdata")
             .then((obj) => {
-                console.log(obj.data)
                 todoServiceData = todoServiceData.concat(obj.data);
                 isDataDownloadedFromServer = true;
+                isDownloading = false;
                 return callback(todoServiceData);
             }, (error) => {
                 isDownloading = false;
@@ -37,7 +37,16 @@ app.factory('todoService', ['$http', function ($http) {
 
     //update data
     todoService.updateTodo = function (todo) {
-        //saveDataOnServer
+        $http({
+            method: 'post',
+            url: '/updatetodo',
+            data: todo
+        }).then(function successCallback(response) {
+            console.log(response)
+
+        }, function errorCallback(response) {
+            console.log('error')
+        });
     };
 
     //delete todo
@@ -64,6 +73,7 @@ app.factory('todoService', ['$http', function ($http) {
             if (!isDataDownloadedFromServer) {
                 return this.getDataFromServer(callback);
             } else {
+                isDownloading = false;
                 return callback(todoServiceData);
             }
         }
@@ -83,6 +93,7 @@ app.factory('todoService', ['$http', function ($http) {
     todoService.makeUrgent = function (todo) {
         const findedTodo = todoServiceData.find((neededTodo) => neededTodo.id === todo.id);
         findedTodo.isUrgent = !findedTodo.isUrgent;
+        this.updateTodo(findedTodo);
     };
 
 
@@ -92,6 +103,7 @@ app.factory('todoService', ['$http', function ($http) {
             findedTodo.statusId = Number(column);
             findedTodo.status = status;
         }
+        this.updateTodo(findedTodo);
     };
 
     return todoService;

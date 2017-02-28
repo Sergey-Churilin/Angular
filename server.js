@@ -22,23 +22,36 @@ app.post('/addtodo', function (req, res) {
     var newToto = new wunderlistModel(data);
     newToto.save(function (err, newToto) {
         if (err){
-            console.log('error saving')
+            console.log('error saving');
         } else {
-            console.log('success saving')
+            console.log('success saving');
             res.send('Hello World')
         }
     });
 });
 
-app.post('/updatetodo:id', function (req, res) {
+app.post('/updatetodo', function (req, res) {
     var data = req.body;
-    var newToto = new wunderlistModel(data);
-    newToto.save(function (err, newToto) {
-        if (err){
-            console.log('error saving')
+    wunderlistModel.findOne({id: data.id}, function (err, todo) {
+        // Handle any possible database errors
+        if (err) {
+            res.status(500).send(err);
+            console.log('no id')
         } else {
-            console.log('success saving')
-            res.send('Hello World')
+            todo.title = data.title || todo.title;
+            todo.description = data.description || todo.description;
+            todo.isUrgent = data.isUrgent;
+            todo.status = data.status || todo.status;
+            todo.statusId = data.statusId;
+
+            // Save the updated document back to the database
+            todo.save(function (err, todo) {
+                if (err) {
+                    console.log('save error');
+                    res.status(500).send(err)
+                }
+                res.send(todo);
+            });
         }
     });
 });
@@ -60,4 +73,4 @@ app.delete('/deletedata/:id', function (req, res) {
     });
 });
 
-app.listen(3000);
+app.listen(3001);

@@ -1,9 +1,8 @@
 app.controller('EditTodoController', ['$stateParams','$state','todoService','columnsService',
     function ($stateParams,$state, todoService,columnsService) {
-        console.log($state)
         this.todo = todoService.getTodo($stateParams.id);
 
-        if(!this.title){
+        if(!this.todo){
             todoService.getAllTodos((data) => {
                 this.todo = todoService.getTodo(Number($stateParams.id));
             });
