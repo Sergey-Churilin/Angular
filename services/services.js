@@ -1,12 +1,13 @@
 app.factory('todoService', ['$http', function ($http) {
-    let todoServiceData = [];
+    let todoServiceData = JSON.parse(localStorage.getItem('allTodos'));
+    if(!todoServiceData){
+        todoServiceData = [];
+    }
     let isDataDownloadedFromServer = false;
     let isDownloading = false;
     const todoService = {};
-
     //get data
     todoService.getDataFromServer = function (callback) {
-        console.log('send request')
         $http.get("/getdata")
             .then((obj) => {
                 todoServiceData = todoServiceData.concat(obj.data);
@@ -15,14 +16,16 @@ app.factory('todoService', ['$http', function ($http) {
                 return callback(todoServiceData);
             }, (error) => {
                 isDownloading = false;
+                console.log('error to download')
                 return callback('');
             });
     };
 
     //add data
     todoService.addTodo = function (newTodo) {
-        // newTodo.id = todoServiceData.length;
         todoServiceData.push(newTodo);
+        localStorage.setItem('allTodos',JSON.stringify(todoServiceData));
+
         $http({
             method: 'post',
             url: '/addtodo',
@@ -56,7 +59,8 @@ app.factory('todoService', ['$http', function ($http) {
                 return true;
             }
         });
-
+        todoServiceData.splice(findedTodoIndex, 1);
+        localStorage.setItem('allTodos',JSON.stringify(todoServiceData));
         $http.delete("/deletedata/"+todo.id)
             .then((obj) => {
                 console.log(obj);
@@ -64,11 +68,16 @@ app.factory('todoService', ['$http', function ($http) {
                 console.log(error);
             });
 
-        todoServiceData.splice(findedTodoIndex, 1);
+
     };
 
-    todoService.getAllTodos = function (callback) {
+    todoService.getAllTodos = function(callback){
+
         if (callback && !isDownloading) {
+            if(todoServiceData.length > 0){
+                return callback(todoServiceData);
+            }
+
             isDownloading = true;
             if (!isDataDownloadedFromServer) {
                 return this.getDataFromServer(callback);
@@ -81,9 +90,10 @@ app.factory('todoService', ['$http', function ($http) {
     };
 
     todoService.getFilteredTodos = function (column) {
-        return todoServiceData.filter((todo) => {
-            return todo.statusId === column.id;
-        });
+            return todoServiceData.filter((todo) => {
+                return todo.statusId === column.id;
+            });
+
     };
 
     todoService.getTodo = function (id) {
@@ -93,6 +103,7 @@ app.factory('todoService', ['$http', function ($http) {
     todoService.makeUrgent = function (todo) {
         const findedTodo = todoServiceData.find((neededTodo) => neededTodo.id === todo.id);
         findedTodo.isUrgent = !findedTodo.isUrgent;
+        localStorage.setItem('allTodos',JSON.stringify(todoServiceData));
         this.updateTodo(findedTodo);
     };
 
@@ -102,8 +113,9 @@ app.factory('todoService', ['$http', function ($http) {
         if (findedTodo) {
             findedTodo.statusId = Number(column);
             findedTodo.status = status;
+            localStorage.setItem('allTodos',JSON.stringify(todoServiceData));
+            this.updateTodo(findedTodo);
         }
-        this.updateTodo(findedTodo);
     };
 
     return todoService;

@@ -14,7 +14,7 @@ var wunderlistModel = require('./database.js');
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, '/')));
+app.use(express.static(path.join(__dirname, '../')));
 
 
 app.post('/addtodo', function (req, res) {

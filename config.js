@@ -5,13 +5,13 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
             url: '/all',
             controller:'ListController',
             controllerAs:'listCtrl',
-            templateUrl: "app/templates/list-template.html",
+            templateUrl: "templates/list-template.html",
         })
         .state('todo', {
             url: '/todo',
             controller:'ColumnController',
             controllerAs:'colCtrl',
-            templateUrl: "app/templates/filteredColumn-template.html",
+            templateUrl: "templates/filteredColumn-template.html",
             params:{
                 id:0
             }
@@ -20,7 +20,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
             url: '/inprocess',
             controller:'ColumnController',
             controllerAs:'colCtrl',
-            templateUrl: "app/templates/filteredColumn-template.html",
+            templateUrl: "templates/filteredColumn-template.html",
             params:{
                 id:1
             }
@@ -29,7 +29,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
             url: '/testing',
             controller:'ColumnController',
             controllerAs:'colCtrl',
-            templateUrl: "app/templates/filteredColumn-template.html",
+            templateUrl: "templates/filteredColumn-template.html",
             params:{
                 id:2
             }
@@ -38,7 +38,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
             url: '/done',
             controller:'ColumnController',
             controllerAs:'colCtrl',
-            templateUrl: "app/templates/filteredColumn-template.html",
+            templateUrl: "templates/filteredColumn-template.html",
             params:{
                 id:3
             }
@@ -47,12 +47,12 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
             url: '/edittodo/:id',
             controller:'EditTodoController',
             controllerAs:'editCtrl',
-            templateUrl: "app/templates/editTodo-template.html",
+            templateUrl: "templates/editTodo-template.html",
         })
         .state('addtodo', {
             url: '/addtodo',
             controller:'FormController',
             controllerAs:'formCtrl',
-            templateUrl: "app/form/form-template.html",
+            templateUrl: "form/form-template.html",
         })
 }]);

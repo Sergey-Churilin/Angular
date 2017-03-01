@@ -1,4 +1,5 @@
 app.controller('FormController',['todoService',function (todoService) {
+    this.enabled =  this.todo && this.todo.title!='' ? false : true;
     this.addTodo = function ($event) {
         $event.preventDefault();
         this.todo.status = 'todo';
@@ -10,4 +11,4 @@ app.controller('FormController',['todoService',function (todoService) {
         todoService.addTodo(this.todo);
         this.todo = {};
     };
-}])
+}]);

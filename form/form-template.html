@@ -17,7 +17,7 @@
                            ng-model="formCtrl.todo.isUrgent"
                            ng-checked='{{formCtrl.todo.isUrgent}}'><label for="isUrgent">Срочный </label>
                 </div>
-                <button type="submit" class="btn btn-default">Add todo</button>
+                <button type="submit" ng-disabled="!formCtrl.todo.title" class="btn btn-default">Add todo</button>
             </form>
         </div>
 

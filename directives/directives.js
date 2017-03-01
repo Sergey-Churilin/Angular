@@ -11,7 +11,7 @@ app.directive('oneTodo', function () {
     return {
         controller: 'TodoController',
         controllerAs: "todoCtrl",
-        templateUrl: "app/templates/oneTodo.html",
+        templateUrl: "templates/oneTodo.html",
         replace:true,
         scope:{
             'todo':'=',
@@ -24,7 +24,7 @@ app.directive('oneColumn', function () {
     return {
         controller: 'ListController',
         controllerAs: "listCtrl",
-        templateUrl: "app/templates/oneColumn-template.html",
+        templateUrl: "templates/oneColumn-template.html",
         replace:true
     }
 });
