@@ -73,4 +73,4 @@ app.delete('/deletedata/:id', function (req, res) {
     });
 });
 
-app.listen(3001);
+app.listen(3000);

@@ -1,3 +1,5 @@
+var app = require('../app.js');
+
 app.controller('FormController',['todoService',function (todoService) {
     this.enabled =  this.todo && this.todo.title!='' ? false : true;
     this.addTodo = function ($event) {
@@ -12,3 +14,11 @@ app.controller('FormController',['todoService',function (todoService) {
         this.todo = {};
     };
 }]);
+
+app.directive('addTodo',function () {
+    return {
+        controller:'FormController',
+        controllerAs:"formCtrl",
+        template: require("../form/form-template.html")
+    }
+});

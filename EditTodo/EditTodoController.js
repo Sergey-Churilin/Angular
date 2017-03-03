@@ -1,3 +1,5 @@
+var app = require('../app.js');
+
 app.controller('EditTodoController', ['$stateParams','$state','todoService','columnsService',
     function ($stateParams,$state, todoService,columnsService) {
         this.todo = todoService.getTodo($stateParams.id);

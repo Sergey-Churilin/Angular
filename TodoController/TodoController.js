@@ -1,3 +1,5 @@
+var app = require('../app.js');
+
 app.controller('TodoController', ['$location', '$scope','todoService', function ($location,$scope, todoService) {
     this.column = $scope.todo.statusId.toString();
     this.deleteTodo = function (todo) {
@@ -12,3 +14,16 @@ app.controller('TodoController', ['$location', '$scope','todoService', function 
     };
 
 }]);
+
+app.directive('oneTodo', function () {
+    return {
+        controller: 'TodoController',
+        controllerAs: "todoCtrl",
+        template: require("./oneTodo.html"),
+        replace:true,
+        scope:{
+            'todo':'=',
+            'columns':'='
+        }
+    }
+});

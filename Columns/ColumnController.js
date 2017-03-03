@@ -1,3 +1,5 @@
+var app = require('../app.js');
+
 app.controller('ColumnController', ['$location', '$stateParams','todoService','columnsService',
     function ($location,$stateParams, todoService,columnsService) {
 
@@ -14,3 +16,13 @@ app.controller('ColumnController', ['$location', '$stateParams','todoService','c
     };
 
 }]);
+
+
+/*app.directive('filteredTodo', function () {
+ return {
+ controller: 'ColumnController',
+ controllerAs: "colCtrl",
+ templateUrl: "app/templates/oneColumn-template.html",
+ replace:true
+ }
+ });*/

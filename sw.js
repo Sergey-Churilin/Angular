@@ -12,13 +12,13 @@ event.waitUntil(
                 '/templates/oneColumn-template.html',
                 '/templates/oneTodo.html',
                 '/app.js',
-                '/controllers/ColumnController.js',
+                '/TodoController/ColumnController.js',
                 '/config.js',
                 '/directives/directives.js',
-                '/controllers/EditTodoController.js',
-                '/controllers/ListController.js',
+                '/TodoController/EditTodoController.js',
+                '/TodoController/ListController.js',
                 '/filters/stateFilter.js',
-                '/controllers/TodoController.js',
+                '/TodoController/TodoController.js',
                 '/services/services.js'
             ]);
         })

@@ -1,5 +1,7 @@
+var app = require('../app.js');
+
 app.factory('todoService', ['$http', function ($http) {
-    let todoServiceData = JSON.parse(localStorage.getItem('allTodos'));
+    let todoServiceData = [];//JSON.parse(localStorage.getItem('allTodos'));
     if(!todoServiceData){
         todoServiceData = [];
     }
@@ -11,6 +13,7 @@ app.factory('todoService', ['$http', function ($http) {
         $http.get("/getdata")
             .then((obj) => {
                 todoServiceData = todoServiceData.concat(obj.data);
+                localStorage.setItem('allTodos',JSON.stringify(todoServiceData));
                 isDataDownloadedFromServer = true;
                 isDownloading = false;
                 return callback(todoServiceData);
@@ -74,9 +77,9 @@ app.factory('todoService', ['$http', function ($http) {
     todoService.getAllTodos = function(callback){
 
         if (callback && !isDownloading) {
-            if(todoServiceData.length > 0){
+/*            if(todoServiceData.length > 0){
                 return callback(todoServiceData);
-            }
+            }*/
 
             isDownloading = true;
             if (!isDataDownloadedFromServer) {
@@ -144,3 +147,41 @@ app.factory('columnsService', function () {
 
     return columnsService;
 });
+
+app.factory('authService', ['$http',function ($http) {
+    const authService = {};
+
+    authService.createNewUser = function (authData,callback) {
+        $http({
+            method: 'post',
+            url: '/addUser',
+            data: authData
+        }).then(function successCallback(response) {
+            console.log(response)
+            //TODO add user to local storage and check for data
+
+        }, function errorCallback(response) {
+            console.log('error')
+        });
+    };
+
+    authService.loginUser = function (authData,callback) {
+        $http({
+            method: 'post',
+            url: '/loginUser',
+            data: authData
+        }).then(function successCallback(response) {
+            console.log(response)
+            //TODO add userTodos to local storage
+
+        }, function errorCallback(response) {
+            console.log('error')
+        });
+    };
+
+    authService.isLoggedIn = function () {
+        return false;
+    };
+
+    return authService;
+}]);
