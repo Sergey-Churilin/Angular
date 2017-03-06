@@ -1,8 +1,28 @@
 <section>
-    <form action="#">
-        <input type="text" ng-model="login" placeholder="input your login">
-        <input type="password" ng-model="password" placeholder="input your password">
-        <button type="submit" ng-click="authCtrl.createNewUser()">Sign Up</button>
-        <button type="submit" ng-click="authCtrl.loginUser()">Log In</button>
+
+    <form>
+        <div class="form-group">
+            <input type="text" ng-model="authCtrl.user.login" placeholder="input your login">
+        </div>
+
+        <div class="form-group">
+            <input type="password" ng-model="authCtrl.user.password" placeholder="input your password">
+        </div>
+        <div class="checkbox">
+            <input type="checkbox" id="remember"
+                   ng-model="authCtrl.user.remember"
+                   ng-checked="authCtrl.user.remember"><label for="remember">Remember me</label>
+        </div>
+        <button type="submit" ng-click="authCtrl.createNewUser($event)">Sign Up</button>
+        <button type="submit" ng-click="authCtrl.loginUser($event)">Log In</button>
+        <div ng-show="authCtrl.show">{{authCtrl.responseText}}</div>
     </form>
+
+<!--    <form action="#">
+        <input type="text" ng-model="authCtrl.user.login" placeholder="input your login">
+        <input type="password" ng-model="authCtrl.user.password" placeholder="input your password">
+        <button type="submit" ng-click="authCtrl.createNewUser($event)">Sign Up</button>
+        <button type="submit" ng-click="authCtrl.loginUser($event)">Log In</button>
+        <div ng-show="authCtrl.show">{{authCtrl.responseText}}</div>
+    </form>-->
 </section>

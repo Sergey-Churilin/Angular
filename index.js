@@ -3,7 +3,7 @@ require("bootstrap");
 require("angular");
 require("angular-ui-router");
 require("./js/customScripts.js");
-
+require('angular-md5')
 require("./app.js");
 require("./config.js");
 require("./form/form.js");

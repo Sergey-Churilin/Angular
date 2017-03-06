@@ -15,7 +15,7 @@
                 <div class="checkbox">
                     <input type="checkbox" id="isUrgent" name="isUrgent"
                            ng-model="formCtrl.todo.isUrgent"
-                           ng-checked='{{formCtrl.todo.isUrgent}}'><label for="isUrgent">Срочный </label>
+                           ng-checked="formCtrl.todo.isUrgent"><label for="isUrgent">Срочный </label>
                 </div>
                 <button type="submit" ng-disabled="!formCtrl.todo.title" class="btn btn-default">Add todo</button>
             </form>

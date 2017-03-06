@@ -1,19 +1,28 @@
 var app = require('../app.js');
 
-app.controller('AuthController', ['authService', function (authService) {
-    this.loginUser = function ($event) {
-        authService.loginUser({"login":this.login,"pass":this.password},(data) => {
-            if(data){
-                this.todoLists = data;
+
+app.controller('AuthController', ['authService','md5', function (authService,md5) {
+    this.show = false;
+    this.loginUser = ($event) => {
+        $event.preventDefault();
+        console.log(this.user)
+        authService.loginUser({"login":this.user.login,"pass":md5.createHash(this.user.password),'remember':this.user.remember},(response) => {
+            if(response){
+                this.responseText = response.data;
+                this.show = true;
             }
 
         });
+
     };
 
-    this.createNewUser = function () {
-        authService.createNewUser({"login":this.login,"pass":this.password},(data) => {
-            if(data){
-                this.todoLists = data;
+    this.createNewUser =  ($event) =>  {
+        $event.preventDefault();
+        console.log(this.user)
+        authService.createNewUser({"login":this.user.login,"pass":md5.createHash(this.user.password),'remember':this.user.remember},(response) => {
+            if(response){
+                this.responseText = response.data;
+                this.show = true;
             }
         });
     }

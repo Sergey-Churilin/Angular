@@ -1,6 +1,6 @@
 var app = require('../app.js');
 
-app.controller('ListController', ['$scope','$state','todoService','columnsService', function ($scope,$state,todoService,columnsService) {
+app.controller('ListController', ['$scope','$state','todoService','columnsService','authService', function ($scope,$state,todoService,columnsService,authService) {
 /*    $scope.$on("$stateChangeSuccess", function (event, toState, toParams, fromState, fromParams, error) {
         $state.go("auth");
     });
@@ -9,6 +9,7 @@ app.controller('ListController', ['$scope','$state','todoService','columnsServic
     // if(){
 
     // }
+    this.show = authService.isLoggedIn();
 
     this.columns = columnsService.getColumns();
 
@@ -20,9 +21,14 @@ app.controller('ListController', ['$scope','$state','todoService','columnsServic
 
     });
 
+
     this.getTodos = function (column) {
         return todoService.getFilteredTodos(column);
     };
+
+    this.logOut = function () {
+        authService.logOut();
+    }
 }]);
 
 app.directive('todoList', function () {

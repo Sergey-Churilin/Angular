@@ -1,6 +1,6 @@
 var app = require('../app.js');
 
-app.factory('todoService', ['$http', function ($http) {
+app.factory('todoService', ['$http','authService', function ($http,authService) {
     let todoServiceData = [];//JSON.parse(localStorage.getItem('allTodos'));
     if(!todoServiceData){
         todoServiceData = [];
@@ -10,25 +10,29 @@ app.factory('todoService', ['$http', function ($http) {
     const todoService = {};
     //get data
     todoService.getDataFromServer = function (callback) {
-        $http.get("/getdata")
-            .then((obj) => {
-                todoServiceData = todoServiceData.concat(obj.data);
-                localStorage.setItem('allTodos',JSON.stringify(todoServiceData));
-                isDataDownloadedFromServer = true;
-                isDownloading = false;
-                return callback(todoServiceData);
-            }, (error) => {
-                isDownloading = false;
-                console.log('error to download')
-                return callback('');
-            });
+        const data = authService.getUser();
+        $http({
+            method: 'post',
+            url: '/getdata',
+            data: data
+        }) .then((obj) => {
+            todoServiceData = todoServiceData.concat(obj.data);
+            localStorage.setItem('allTodos',JSON.stringify(todoServiceData));
+            isDataDownloadedFromServer = true;
+            isDownloading = false;
+            return callback(todoServiceData);
+        }, (error) => {
+            isDownloading = false;
+            console.log('error to download')
+            return callback('');
+        });
     };
 
     //add data
-    todoService.addTodo = function (newTodo) {
-        todoServiceData.push(newTodo);
+    todoService.addTodo = function (todo) {
+        var newTodo = {'todo':todo,'user':authService.getUser()};
+        todoServiceData.push(todo);
         localStorage.setItem('allTodos',JSON.stringify(todoServiceData));
-
         $http({
             method: 'post',
             url: '/addtodo',
@@ -36,17 +40,21 @@ app.factory('todoService', ['$http', function ($http) {
         }).then(function successCallback(response) {
             console.log(response)
 
+            //set temperary as stub
+            isDataDownloadedFromServer = true;
+
         }, function errorCallback(response) {
             console.log('error')
         });
     };
 
     //update data
-    todoService.updateTodo = function (todo) {
+    todoService.updateTodo = function (todoToUpdate) {
+        var data = {'todo':todoToUpdate,'user':authService.getUser()};
         $http({
             method: 'post',
             url: '/updatetodo',
-            data: todo
+            data: data
         }).then(function successCallback(response) {
             console.log(response)
 
@@ -57,19 +65,35 @@ app.factory('todoService', ['$http', function ($http) {
 
     //delete todo
     todoService.deleteTodo = function (todo) {
+
+
+
         const findedTodoIndex = todoServiceData.findIndex((neededTodo, index) => {
             if (neededTodo.id === todo.id) {
                 return true;
             }
         });
+
+        var data = {'todo':todo,'user':authService.getUser()};
+        $http({
+            method: 'post',
+            url: '/deletedata',
+            data: data
+        })            .then((obj) => {
+            console.log(obj);
+        },(error)=>{
+            console.log(error);
+        });
+
+
         todoServiceData.splice(findedTodoIndex, 1);
         localStorage.setItem('allTodos',JSON.stringify(todoServiceData));
-        $http.delete("/deletedata/"+todo.id)
+     /*   $http.delete("/deletedata/"+todo.id)
             .then((obj) => {
                 console.log(obj);
             },(error)=>{
                 console.log(error);
-            });
+            });*/
 
 
     };
@@ -148,39 +172,72 @@ app.factory('columnsService', function () {
     return columnsService;
 });
 
-app.factory('authService', ['$http',function ($http) {
+app.factory('authService', ['$http','$state',function ($http,$state) {
     const authService = {};
-
+    // = false;
+    let user = JSON.parse(localStorage.getItem('user'));
+    let isLogged ;
     authService.createNewUser = function (authData,callback) {
+        if(authData.remember){
+            localStorage.setItem('user',JSON.stringify(authData));
+        }
         $http({
             method: 'post',
-            url: '/addUser',
+            url: '/adduser',
             data: authData
         }).then(function successCallback(response) {
-            console.log(response)
+            user = authData;
+            isLogged = true;
+            callback(response);
+            $state.go('all')
             //TODO add user to local storage and check for data
 
         }, function errorCallback(response) {
+            if(response.status=== 403){
+                callback(response);
+            }
             console.log('error')
         });
     };
 
     authService.loginUser = function (authData,callback) {
+        if(authData.remember){
+            localStorage.setItem('user',JSON.stringify(authData));
+        }
         $http({
             method: 'post',
-            url: '/loginUser',
+            url: '/loginuser',
             data: authData
         }).then(function successCallback(response) {
-            console.log(response)
+            user = authData;
+            isLogged = true;
+            callback(response);
+            $state.go('all');
+            console.log(response);
             //TODO add userTodos to local storage
 
         }, function errorCallback(response) {
-            console.log('error')
+            callback(response);
         });
     };
 
+    authService.getUser = function () {
+        if(Object.keys(user).length === 0){
+            user = JSON.parse(localStorage.getItem('user'));
+        }
+        return user;
+    };
+
     authService.isLoggedIn = function () {
-        return false;
+        isLogged = (user && user != {}) ? true : false;
+        return isLogged;
+    };
+
+    authService.logOut = function () {
+        user = null;
+        localStorage.removeItem('user');
+        //localStorage.removeItem('allTodos');
+        $state.go('auth');
     };
 
     return authService;
