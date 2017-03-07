@@ -1,9 +1,12 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="column col-sm-3" ng-repeat="column in listCtrl.columns  track by $index">
-            <one-column></one-column>
+        <div class="col-sm-3" ng-repeat="column in listCtrl.columns  track by $index">
+            <div class="column">
+                <one-column></one-column>
+            </div>
+
         </div>
     </div>
-    <button ng-click="listCtrl.logOut()" ng-show="listCtrl.show">Logout</button>
+    <!--<button  ></button>-->
 </div>
 

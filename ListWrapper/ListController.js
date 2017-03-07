@@ -1,26 +1,14 @@
 var app = require('../app.js');
 
 app.controller('ListController', ['$scope','$state','todoService','columnsService','authService', function ($scope,$state,todoService,columnsService,authService) {
-/*    $scope.$on("$stateChangeSuccess", function (event, toState, toParams, fromState, fromParams, error) {
-        $state.go("auth");
-    });
-
-    $state.go("auth");*/
-    // if(){
-
-    // }
     this.show = authService.isLoggedIn();
-
     this.columns = columnsService.getColumns();
-
     this.todoLists = [];
     todoService.getAllTodos((data) => {
         if(data){
             this.todoLists = data;
         }
-
     });
-
 
     this.getTodos = function (column) {
         return todoService.getFilteredTodos(column);

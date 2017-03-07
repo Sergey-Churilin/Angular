@@ -99,6 +99,7 @@ app.post('/updatetodo', function (req, res) {
                     todoToUpdate.isUrgent = currentTodo.isUrgent;
                     todoToUpdate.status = currentTodo.status || todoToUpdate.status;
                     todoToUpdate.statusId = currentTodo.statusId;
+                    todoToUpdate.deadline = currentTodo.deadline;
 
                     // Save the updated document back to the database
                     console.log('todoToUpdate.statusId = '+todoToUpdate.statusId);

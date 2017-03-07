@@ -1,0 +1,15 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a ui-sref="all">All</a></li>
+                <li><a ui-sref="todo">Todo</a></li>
+                <li><a ui-sref="inprocess">In Process</a></li>
+                <li><a ui-sref="testing">Testing</a></li>
+                <li><a ui-sref="done">Done</a></li>
+                <li><a ui-sref="addtodo">Add Todo</a></li>
+                <li ng-click="navCtrl.logOut()" class="log-out" ng-show="navCtrl.show"><a ui-sref="addtodo">Logout</a></li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>

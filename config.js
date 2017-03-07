@@ -1,4 +1,4 @@
-var app = require('./app.js');
+const app = require('./app.js');
 
 const config =  app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('auth');
@@ -53,9 +53,9 @@ const config =  app.config(['$stateProvider', '$urlRouterProvider', function ($s
         })
         .state('addtodo', {
             url: '/addtodo',
-            controller:'FormController',
-            controllerAs:'formCtrl',
-            templateUrl: "form/form-template.html",
+            controller:'AddTodoController',
+            controllerAs:'addTodoCtrl',
+            templateUrl: "AddTodo/add-todo-template.html",
         })
         .state('auth', {
             url: '/auth',
@@ -64,5 +64,3 @@ const config =  app.config(['$stateProvider', '$urlRouterProvider', function ($s
             templateUrl: "Authorization/auth-template.html",
         })
 }]);
-
-//module.exports = config;

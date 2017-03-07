@@ -4,9 +4,9 @@ event.waitUntil(
             return cache.addAll([
                 '/index.html',
                 '/css/style.css',
-                '/form/addTodoDirective.js',
-                '/form/form.js',
-                '/form/form-template.html',
+                '/AddTodo/addTodoDirective.js',
+                '/AddTodo/AddTodoController.js',
+                '/AddTodo/add-todo-template.html',
                 '/templates/editTodo-template.html',
                 '/templates/filteredColumn-template.html',
                 '/templates/oneColumn-template.html',

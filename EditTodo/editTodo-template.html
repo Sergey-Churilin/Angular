@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row">
-        <div class="col-sm-4">
-            <form ng-submit="editCtrl.updateTodo($event)">
+        <div class="col-sm-offset-4 col-sm-4">
+            <form class="todo-form" ng-submit="editCtrl.updateTodo($event)">
                 <div class="form-group">
                     <label for="title">Title</label>
                     <input type="text" id="title" class="form-control" name="title" ng-model="editCtrl.todo.title"
@@ -9,14 +9,34 @@
                 </div>
 
                 <div class="form-group">
-            <textarea class="form-control" rows="3" placeholder="Description"
-                      ng-model="editCtrl.todo.description"></textarea>
+                    <label for="todoDescription">Description</label>
+                    <textarea class="form-control" id="todoDescription" rows="3" placeholder="Description"
+                              ng-model="editCtrl.todo.description"></textarea>
                 </div>
+                <div class="form-group">
+                    <label for="datepicker">Deadline date</label>
+                    <input type="text" id="datepicker" class="form-control" ng-model="editCtrl.todo.deadline"
+                           placeholder="todo deadline" mydatepicker/>
+                </div>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <div class="select" id="status">
+                            <select ng-model="editCtrl.todo.newstatusId" class="form-control"
+                                    ng-change="editCtrl.selectChanged(editCtrl.column,editCtrl.todo)">
+                                <option ng-repeat="column in editCtrl.columns" value="{{column.id}}">{{column.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
                 <div class="checkbox">
                     <input type="checkbox" id="isUrgent" name="isUrgent"
                            ng-model="editCtrl.todo.isUrgent"
-                           ng-checked=""{{editCtrl.todo.isUrgent}}"><label for="isUrgent">Срочный </label>
+                           ng-checked="editCtrl.todo.isUrgent"><label for="isUrgent">Срочный </label>
                 </div>
+
+
+
+
                 <button type="submit" class="btn btn-default">Save todo</button>
             </form>
         </div>

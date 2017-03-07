@@ -1,0 +1,30 @@
+<div class="container">
+    <div class="row">
+        <div class="col-sm-offset-4 col-sm-4">
+            <form class="todo-form" ng-submit="addTodoCtrl.addTodo($event)">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" class="form-control" name="title" ng-model="addTodoCtrl.todo.title"
+                           placeholder="todo title">
+                </div>
+                <div class="form-group">
+                    <label for="todoDescription">Description</label>
+            <textarea class="form-control" rows="3"  id="todoDescription" placeholder="Description"
+                      ng-model="addTodoCtrl.todo.description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="datepicker">Deadline date</label>
+                    <input type="text" id="datepicker" class="form-control" ng-model="addTodoCtrl.todo.deadline" placeholder="todo deadline" mydatepicker />
+                </div>
+
+                <div class="checkbox">
+                    <input type="checkbox" id="isUrgent" name="isUrgent"
+                           ng-model="addTodoCtrl.todo.isUrgent"
+                           ng-checked="addTodoCtrl.todo.isUrgent"><label for="isUrgent">Срочный </label>
+                </div>
+                <button type="submit" ng-disabled="!addTodoCtrl.todo.title" class="btn btn-default">Add todo</button>
+            </form>
+        </div>
+
+    </div>
+</div>

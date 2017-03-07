@@ -1,9 +1,32 @@
+html,body{
+    height: 100%;
+}
+body{
+    background: #f6f6f6;
+}
+
+.navbar-nav>li {
+    float: none;
+    display: inline-block;
+    font-size: 18px;
+}
+
+.navbar-nav>li:hover{
+    background: #e6e6e6;
+}
+
+.navbar-nav{
+    float: none;
+    text-align: center;
+}
+
 .todoWrapper{
-    /*width: 400px;*/
+    width: 90%;
+    margin: 10px auto;
     border: 1px solid #000;
     border-radius:10px;
     background: rgba(0, 255, 255, 0.17);
-    margin-bottom: 20px;
+    /*margin-bottom: 20px;*/
     padding: 10px;
 }
 .todoWrapper.urgent{
@@ -12,8 +35,19 @@
 .todoWrapper.todoDone{
     background: rgba(15, 205, 95, 0.55);
 }
+.column{
+    border: 1px solid deepskyblue;
+    border-radius: 10px;
+}
+
 .columnTitle{
     text-align: center;
+    background: deepskyblue;
+    margin: 0 0 20px 0;
+    padding: 10px 0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    color: #fff;
 }
 .clearfix:after{
     content: '';
@@ -43,6 +77,7 @@ ul{
     line-height: 32px;
     color: #333;
     text-align: center;
+    margin-bottom: 20px;
 }
 .photo{
     margin-left: 170px;
@@ -61,4 +96,66 @@ ul{
 
 .checkbox input[type=checkbox]{
     margin-left: 0;
+}
+.oneTodocheckbox{
+    width: 20px;
+    height: 20px;
+}
+
+.oneTodoLabel{
+    font-size: 18px;
+    display: inline-block;
+    margin-left: 20px;
+}
+/*
+auth
+*/
+.auth{
+    padding: 40px 0;
+    background: #3ab18a;
+}
+
+.auth-form{
+    width: 300px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.auth-form-input{
+    width: 300px;
+    height: 40px;
+    padding-left: 10px;
+    color: #333;
+}
+.btn-logIn{
+    float: right;
+}
+
+label[for="remember"]{
+    font-size: 20px;
+    padding-left: 30px;
+}
+
+#remember{
+    width: 20px;
+    height: 20px;
+}
+
+.todo-form{
+    box-sizing: content-box;
+    width: 300px;
+    margin: 0 auto;
+    padding: 40px;
+    background: #f0f0f0;
+}
+
+.log-out{
+    background: #baecba;
+}
+
+.error-auth{
+    font-size: 20px;
+    color: #ff0039;
+    text-align: center;
+    margin: 20px 0 0;
 }

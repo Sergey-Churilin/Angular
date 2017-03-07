@@ -3,10 +3,13 @@ require("bootstrap");
 require("angular");
 require("angular-ui-router");
 require("./js/customScripts.js");
-require('angular-md5')
+require('angular-md5');
+require('angular-bootstrap');
+require('angular-ui-bootstrap-datetimepicker');
 require("./app.js");
 require("./config.js");
-require("./form/form.js");
+require("./AddTodo/AddTodoController.js");
+require("./Navigation/NavControloler.js");
 require("./ListWrapper/ListController.js");
 require("./TodoController/TodoController.js");
 require("./Authorization/AuthController.js");

@@ -1,9 +1,7 @@
 <section class="todoWrapper" ng-class="{urgent:todo.isUrgent}">
     <div class="row">
-        <div class="col-sm-2">
-            <input type="checkbox" ng-click="todoCtrl.makeUrgent($event,todo)" ng-checked='{{todo.isUrgent}}'>
-        </div>
-        <div class="col-sm-8">
+
+        <div class="col-sm-offset-2 col-sm-8">
             <div class="mainWrapper">
                 <div class="title">{{todo.title}}</div>
             </div>
@@ -14,12 +12,19 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-12">
+
+     <!--   <div class="col-sm-6">
+            <div class="checkbox">
+                <input type="checkbox" class="oneTodocheckbox" ng-click="todoCtrl.makeUrgent($event,todo)" ng-checked='todo.isUrgent'>
+                <span class="oneTodoLabel">Urgent </span>
+            </div>
+        </div>-->
+<!--        <div class="col-sm-offset-3 col-sm-6">
             <div class="select">
-                <select ng-model="todoCtrl.column" ng-change="todoCtrl.selectChanged(todoCtrl.column,todo)">
+                <select ng-model="todoCtrl.column" class="form-control" ng-change="todoCtrl.selectChanged(todoCtrl.column,todo)">
                     <option ng-repeat="column in columns" value="{{column.id}}">{{column.name}}</option>
                 </select>
             </div>
-        </div>
+        </div>-->
     </div>
 </section>

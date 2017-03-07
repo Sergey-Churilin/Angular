@@ -1,12 +1,15 @@
 <div class="container">
     <div class="row">
-        <div class="col-sm-4">
-            <h2 class="columnTitle">{{colCtrl.column.name}}</h2>
-            <ul>
-                <li class="todo" ng-repeat="todo in colCtrl.getTodos(column) track by $index">
-                    <one-todo todo="todo" columns="colCtrl.columns" deleteTodo="deleteTodo()"></one-todo>
-                </li>
-            </ul>
+        <div class="col-sm-offset-4 col-sm-4">
+            <div class="columnWrapper">
+                <h2 class="columnTitle">{{colCtrl.column.name}}</h2>
+                <ul>
+                    <li class="todo" ng-repeat="todo in colCtrl.getTodos(column) track by $index">
+                        <one-todo todo="todo" columns="colCtrl.columns" deleteTodo="deleteTodo()"></one-todo>
+                    </li>
+                </ul>
+            </div>
+
         </div>
     </div>
 

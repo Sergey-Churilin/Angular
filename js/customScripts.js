@@ -3,9 +3,11 @@ $(document).ready(function () {
         $('.navbar li').removeClass('active');
         $(this).addClass('active');
     });
+
+    // $('#datepicker').datepicker();
 });
 
-if ('serviceWorker' in navigator) {
+/*if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js', { scope: '/' }).then(function(reg) {
 
         if(reg.installing) {
@@ -20,4 +22,4 @@ if ('serviceWorker' in navigator) {
         // registration failed
         console.log('Registration failed with ' + error);
     });
-}
+}*/
