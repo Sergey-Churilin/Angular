@@ -4,8 +4,7 @@ require("angular");
 require("angular-ui-router");
 require("./js/customScripts.js");
 require('angular-md5');
-require('angular-bootstrap');
-require('angular-ui-bootstrap-datetimepicker');
+
 require("./app.js");
 require("./config.js");
 require("./AddTodo/AddTodoController.js");
