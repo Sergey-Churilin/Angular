@@ -1,28 +1,30 @@
 var app = require('../app.js');
 
-app.controller('ColumnController', ['$stateParams','todoService', 'columnsService', function ($stateParams,todoService, columnsService) {
-    this.columns = columnsService.getColumns();
-    this.column = this.columns[$stateParams.id];
-    this.filterParams = todoService.filterParams();
-    this.selectedParam = this.filterParams[0];
-    this.todoLists = [];
+app.controller('ColumnController', ['$stateParams', '$scope','todoService', 'columnsService', function ($stateParams,$scope,todoService, columnsService) {
+    $scope.columns = columnsService.getColumns();
+    if($stateParams){
+        $scope.column = $scope.columns[$stateParams.id];
+    }
+
+    $scope.filterParams = todoService.filterParams();
+    $scope.selectedParam = $scope.filterParams[0];
+    $scope.todoLists = [];
 
     todoService.getAllTodos((data) => {
-        this.todoLists = data;
+        $scope.todoLists = data;
     });
 
-    this.getTodos = (column) => {
-        if (!column) column = this.column;
+    $scope.getTodos = (column) => {
+        if (!column) column = $scope.column;
         return todoService.getFilteredTodos(column);
     };
 
-    this.getOrderParam = function () {
-        return this.selectedParam;
+    $scope.getOrderParam = function () {
+        return $scope.selectedParam;
     };
 
-    this.setOrderParam = function (newParam) {
-        console.log(newParam)
-        this.selectedParam = newParam;
+    $scope.setOrderParam = function (newParam) {
+        $scope.selectedParam = newParam;
     }
 
 }]);

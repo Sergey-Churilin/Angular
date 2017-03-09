@@ -1,0 +1,7 @@
+<h2>Filter by:</h2>
+<div class="select">
+    <select ng-model="selectedParam" class="form-control"
+            ng-change="setOrderParam(selectedParam)">
+        <option ng-repeat="filterParam in filterParams" value="{{filterParam.value}}">{{filterParam.name}}</option>
+    </select>
+</div>

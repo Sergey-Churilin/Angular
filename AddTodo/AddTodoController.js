@@ -28,15 +28,3 @@ app.controller('AddTodoController',['$state','$rootScope','todoService',function
         template: require("./add-todo-template.html")
     }
 });*/
-
-app.directive('mydatepicker', function () {
-    return {
-        restrict: 'A',
-        link: function (scope, element, attrs, ngModelCtrl) {
-            element.datepicker({
-                minDate: new Date(),
-                dateFormat: 'dd-mm-yy'
-            });
-        }
-    };
-});

@@ -61,7 +61,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 39);
+/******/ 	return __webpack_require__(__webpack_require__.s = 43);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -95,7 +95,7 @@ module.exports = app;
 /* 1 */
 /***/ function(module, exports) {
 
-module.exports = "<div class=\"container\">\r\n    <div class=\"row filtersRow\">\r\n        <div class=\"col-sm-offset-4 col-sm-4\">\r\n            <h2>Filter by:</h2>\r\n            <div class=\"select\">\r\n                <select ng-model=\"colCtrl.selectedParam\" class=\"form-control\"\r\n                        ng-change=\"colCtrl.setOrderParam(colCtrl.selectedParam)\">\r\n                    <option ng-repeat=\"filterParam in colCtrl.filterParams\" value=\"{{filterParam.value}}\">{{filterParam.name}}</option>\r\n                </select>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-offset-4 col-sm-4\">\r\n            <div class=\"columnWrapper\">\r\n                <h2 class=\"columnTitle\">{{colCtrl.column.name}}</h2>\r\n                <ul>\r\n                    <li class=\"todo\" ng-repeat=\"todo in colCtrl.getTodos(column) | orderBy: colCtrl.getOrderParam() track by $index\">\r\n                        <one-todo todo=\"todo\" columns=\"colCtrl.columns\" deleteTodo=\"deleteTodo()\"></one-todo>\r\n                    </li>\r\n                </ul>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n</div>";
+module.exports = "<div class=\"container\">\r\n    <div class=\"row filtersRow\">\r\n        <div class=\"col-sm-offset-4 col-sm-4 \">\r\n            <todo-filters></todo-filters>\r\n        </div>\r\n    </div>\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-offset-4 col-sm-4\">\r\n            <div class=\"columnWrapper\">\r\n                <todo-column></todo-column>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n</div>";
 
 /***/ },
 /* 2 */
@@ -131,18 +131,6 @@ app.controller('AddTodoController',['$state','$rootScope','todoService',function
         template: require("./add-todo-template.html")
     }
 });*/
-
-app.directive('mydatepicker', function () {
-    return {
-        restrict: 'A',
-        link: function (scope, element, attrs, ngModelCtrl) {
-            element.datepicker({
-                minDate: new Date(),
-                dateFormat: 'dd-mm-yy'
-            });
-        }
-    };
-});
 
 /***/ },
 /* 3 */
@@ -200,35 +188,83 @@ app.directive('authForm', function () {
 
 var app = __webpack_require__(0);
 
-app.controller('ColumnController', ['$stateParams','todoService', 'columnsService', function ($stateParams,todoService, columnsService) {
-    this.columns = columnsService.getColumns();
-    this.column = this.columns[$stateParams.id];
-    this.filterParams = todoService.filterParams();
-    this.selectedParam = this.filterParams[0];
-    this.todoLists = [];
+app.controller('ColumnController', ['$stateParams', '$scope','todoService', 'columnsService', function ($stateParams,$scope,todoService, columnsService) {
+    $scope.columns = columnsService.getColumns();
+    if($stateParams){
+        $scope.column = $scope.columns[$stateParams.id];
+    }
+
+    $scope.filterParams = todoService.filterParams();
+    $scope.selectedParam = $scope.filterParams[0];
+    $scope.todoLists = [];
 
     todoService.getAllTodos((data) => {
-        this.todoLists = data;
+        $scope.todoLists = data;
     });
 
-    this.getTodos = (column) => {
-        if (!column) column = this.column;
+    $scope.getTodos = (column) => {
+        if (!column) column = $scope.column;
         return todoService.getFilteredTodos(column);
     };
 
-    this.getOrderParam = function () {
-        return this.selectedParam;
+    $scope.getOrderParam = function () {
+        return $scope.selectedParam;
     };
 
-    this.setOrderParam = function (newParam) {
-        console.log(newParam)
-        this.selectedParam = newParam;
+    $scope.setOrderParam = function (newParam) {
+        $scope.selectedParam = newParam;
     }
 
 }]);
 
 /***/ },
 /* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+var app = __webpack_require__(0);
+
+app.directive('mydatepicker', function () {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs, ngModelCtrl) {
+            element.datepicker({
+                minDate: new Date(),
+                dateFormat: 'dd-mm-yy'
+            });
+        }
+    };
+});
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+var app = __webpack_require__(0);
+
+app.directive('todoColumn', function () {
+    return {
+        template:__webpack_require__(44)
+    };
+});
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+var app = __webpack_require__(0);
+
+app.directive('todoFilters', function () {
+    return {
+        // restrict: 'A',
+        template:__webpack_require__(41)
+    };
+});
+
+
+
+/***/ },
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 const app = __webpack_require__(0);
@@ -263,33 +299,33 @@ app.controller('EditTodoController', ['$stateParams', '$state', '$rootScope', 't
     }]);
 
 /***/ },
-/* 6 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 var app = __webpack_require__(0);
 
-app.controller('ListController', ['todoService', 'columnsService', function (todoService, columnsService) {
-    this.columns = columnsService.getColumns();
-    this.filterParams = todoService.filterParams();
-    this.selectedParam = this.filterParams[0];
-    this.todoLists = [];
+app.controller('ListController', ['$scope','todoService', 'columnsService', function ($scope,todoService, columnsService) {
+    $scope.columns = columnsService.getColumns();
+    $scope.filterParams = todoService.filterParams();
+    $scope.selectedParam = $scope.filterParams[0];
+    $scope.todoLists = [];
 
     todoService.getAllTodos((data) => {
         if (data) {
-            this.todoLists = data;
+            $scope.todoLists = data;
         }
     });
 
-    this.getTodos = function (column) {
+    $scope.getTodos = function (column) {
         return todoService.getFilteredTodos(column);
     };
 
-    this.getOrderParam = function () {
-        return this.selectedParam;
+    $scope.getOrderParam = function () {
+        return $scope.selectedParam;
     };
 
-    this.setOrderParam = function (newParam) {
-        this.selectedParam = newParam;
+    $scope.setOrderParam = function (newParam) {
+        $scope.selectedParam = newParam;
     }
 }]);
 
@@ -297,7 +333,7 @@ app.controller('ListController', ['todoService', 'columnsService', function (tod
 
 
 /***/ },
-/* 7 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 const app = __webpack_require__(0);
@@ -314,12 +350,12 @@ app.directive('appNavigation', function () {
     return {
         controller: 'NavController',
         controllerAs: "navCtrl",
-        template: __webpack_require__(37)
+        template: __webpack_require__(40)
     }
 });
 
 /***/ },
-/* 8 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 var app = __webpack_require__(0);
@@ -343,7 +379,7 @@ app.directive('oneTodo', function () {
     return {
         controller: 'TodoController',
         controllerAs: "todoCtrl",
-        template: __webpack_require__(38),
+        template: __webpack_require__(42),
         replace:true,
         scope:{
             'todo':'=',
@@ -353,7 +389,7 @@ app.directive('oneTodo', function () {
 });
 
 /***/ },
-/* 9 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 const app = __webpack_require__(0);
@@ -363,17 +399,13 @@ const config =  app.config(['$stateProvider', '$urlRouterProvider', function ($s
     $stateProvider
         .state('all', {
             url: '/all',
-            controller:'ListController',
-            controllerAs:'listCtrl',
-            template:__webpack_require__(36)
-            // templateUrl: "ListWrapper/list-template.html",
+            controller:'ColumnController',
+            template:__webpack_require__(39)
         })
         .state('todo', {
             url: '/todo',
             controller:'ColumnController',
-            controllerAs:'colCtrl',
             template:__webpack_require__(1),
-            // templateUrl: "Columns/filteredColumn-template.html",
             params:{
                 id:0
             }
@@ -381,9 +413,7 @@ const config =  app.config(['$stateProvider', '$urlRouterProvider', function ($s
         .state('inprocess', {
             url: '/inprocess',
             controller:'ColumnController',
-            controllerAs:'colCtrl',
             template:__webpack_require__(1),
-            // templateUrl: "Columns/filteredColumn-template.html",
             params:{
                 id:1
             }
@@ -391,9 +421,7 @@ const config =  app.config(['$stateProvider', '$urlRouterProvider', function ($s
         .state('testing', {
             url: '/testing',
             controller:'ColumnController',
-            controllerAs:'colCtrl',
             template:__webpack_require__(1),
-            // templateUrl: "Columns/filteredColumn-template.html",
             params:{
                 id:2
             }
@@ -401,9 +429,7 @@ const config =  app.config(['$stateProvider', '$urlRouterProvider', function ($s
         .state('done', {
             url: '/done',
             controller:'ColumnController',
-            controllerAs:'colCtrl',
             template:__webpack_require__(1),
-            // templateUrl: "Columns/filteredColumn-template.html",
             params:{
                 id:3
             }
@@ -411,29 +437,26 @@ const config =  app.config(['$stateProvider', '$urlRouterProvider', function ($s
         .state('edittodo', {
             url: '/edittodo/:id',
             controller:'EditTodoController',
-            controllerAs:'editCtrl',
-            template:__webpack_require__(35),
-            // templateUrl: "EditTodo/editTodo-template.html",
+            template:__webpack_require__(38),
         })
         .state('addtodo', {
             url: '/addtodo',
             controller:'AddTodoController',
             controllerAs:'addTodoCtrl',
-            template:__webpack_require__(33),
-            // templateUrl: "AddTodo/add-todo-template.html",
+            template:__webpack_require__(36),
         })
         .state('auth', {
             url: '/auth',
             controller:'AuthController',
             controllerAs:'authCtrl',
-            template:__webpack_require__(34),
+            template:__webpack_require__(37),
             // templateUrl: "Authorization/auth-template.html",
         })
 }]);
 
 
 /***/ },
-/* 10 */
+/* 13 */
 /***/ function(module, exports) {
 
 $(document).ready(function () {
@@ -464,15 +487,15 @@ $(document).ready(function () {
 
 
 /***/ },
-/* 11 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-__webpack_require__(18);
+__webpack_require__(21);
 module.exports = 'ngAnimate';
 
 
 /***/ },
-/* 12 */
+/* 15 */
 /***/ function(module, exports) {
 
 /*
@@ -685,16 +708,16 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 })(angular);
 
 /***/ },
-/* 13 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-__webpack_require__(19);
+__webpack_require__(22);
 
 module.exports = 'ui.bootstrap';
 
 
 /***/ },
-/* 14 */
+/* 17 */
 /***/ function(module, exports) {
 
 /**
@@ -5383,33 +5406,33 @@ angular.module('ui.router.state')
 })(window, window.angular);
 
 /***/ },
-/* 15 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
-__webpack_require__(20);
+__webpack_require__(23);
 module.exports = angular;
 
 
 /***/ },
-/* 16 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 // This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.
-__webpack_require__(32)
-__webpack_require__(22)
-__webpack_require__(23)
-__webpack_require__(24)
+__webpack_require__(35)
 __webpack_require__(25)
 __webpack_require__(26)
 __webpack_require__(27)
-__webpack_require__(31)
 __webpack_require__(28)
 __webpack_require__(29)
 __webpack_require__(30)
-__webpack_require__(21)
+__webpack_require__(34)
+__webpack_require__(31)
+__webpack_require__(32)
+__webpack_require__(33)
+__webpack_require__(24)
 
 /***/ },
-/* 17 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 var app = __webpack_require__(0);
@@ -5668,7 +5691,7 @@ app.factory('authService', ['$http','$state',function ($http,$state) {
 }]);
 
 /***/ },
-/* 18 */
+/* 21 */
 /***/ function(module, exports) {
 
 /**
@@ -9829,7 +9852,7 @@ angular.module('ngAnimate', [], function initAngularHelpers() {
 
 
 /***/ },
-/* 19 */
+/* 22 */
 /***/ function(module, exports) {
 
 /*
@@ -17610,7 +17633,7 @@ angular.module('ui.bootstrap.timepicker').run(function() {!angular.$$csp().noInl
 angular.module('ui.bootstrap.typeahead').run(function() {!angular.$$csp().noInlineStyle && !angular.$$uibTypeaheadCss && angular.element(document).find('head').prepend('<style type="text/css">[uib-typeahead-popup].dropdown-menu{display:block;}</style>'); angular.$$uibTypeaheadCss = true; });
 
 /***/ },
-/* 20 */
+/* 23 */
 /***/ function(module, exports) {
 
 /**
@@ -50960,7 +50983,7 @@ $provide.value("$locale", {
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
 
 /***/ },
-/* 21 */
+/* 24 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -51128,7 +51151,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 22 */
+/* 25 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -51228,7 +51251,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 23 */
+/* 26 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -51359,7 +51382,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 24 */
+/* 27 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -51602,7 +51625,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 25 */
+/* 28 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -51820,7 +51843,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 26 */
+/* 29 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -51991,7 +52014,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 27 */
+/* 30 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -52336,7 +52359,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 28 */
+/* 31 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -52450,7 +52473,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 29 */
+/* 32 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -52628,7 +52651,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 30 */
+/* 33 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -52789,7 +52812,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 31 */
+/* 34 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -53315,7 +53338,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 32 */
+/* 35 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -53380,66 +53403,82 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 33 */
+/* 36 */
 /***/ function(module, exports) {
 
 module.exports = "<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-offset-4 col-sm-4\">\r\n            <form class=\"todo-form\" ng-submit=\"addTodoCtrl.addTodo($event)\">\r\n                <div class=\"form-group\">\r\n                    <label for=\"title\">Title</label>\r\n                    <input type=\"text\" id=\"title\" class=\"form-control\" name=\"title\" ng-model=\"addTodoCtrl.todo.title\"\r\n                           placeholder=\"todo title\">\r\n                </div>\r\n                <div class=\"form-group\">\r\n                    <label for=\"todoDescription\">Description</label>\r\n            <textarea class=\"form-control\" rows=\"3\"  id=\"todoDescription\" placeholder=\"Description\"\r\n                      ng-model=\"addTodoCtrl.todo.description\"></textarea>\r\n                </div>\r\n                <div class=\"form-group\">\r\n                    <label for=\"datepicker\">Deadline date</label>\r\n                    <input type=\"text\" id=\"datepicker\" class=\"form-control\" ng-model=\"addTodoCtrl.todo.deadline\" placeholder=\"todo deadline\" mydatepicker />\r\n                </div>\r\n\r\n                <div class=\"checkbox\">\r\n                    <input type=\"checkbox\" id=\"isUrgent\" name=\"isUrgent\"\r\n                           ng-model=\"addTodoCtrl.todo.isUrgent\"\r\n                           ng-checked=\"addTodoCtrl.todo.isUrgent\"><label for=\"isUrgent\">Urgent</label>\r\n                </div>\r\n                <button type=\"submit\" ng-disabled=\"!addTodoCtrl.todo.title\" class=\"btn btn-default\">Add todo</button>\r\n            </form>\r\n        </div>\r\n\r\n    </div>\r\n</div>";
 
 /***/ },
-/* 34 */
+/* 37 */
 /***/ function(module, exports) {
 
 module.exports = "<section class=\"auth\">\r\n\r\n    <form class=\"auth-form\">\r\n        <h3>Please, log in or sign in</h3>\r\n        <div class=\"form-group\">\r\n            <input type=\"text\" class=\"auth-form-input\" ng-model=\"authCtrl.user.login\" placeholder=\"input your login\">\r\n        </div>\r\n\r\n        <div ng-show=\"authCtrl.show\" class=\"error-auth\">{{authCtrl.responseText}}</div>\r\n        <div class=\"form-group\">\r\n            <input type=\"password\"  class=\"auth-form-input\" ng-model=\"authCtrl.user.password\" placeholder=\"input your password\">\r\n        </div>\r\n        <div class=\"checkbox\">\r\n            <input type=\"checkbox\" id=\"remember\"\r\n                   ng-model=\"authCtrl.user.remember\"\r\n                   ng-checked=\"authCtrl.user.remember\"><label for=\"remember\">Remember me</label>\r\n        </div>\r\n        <button type=\"submit\" class=\"btn btn-info btn-lg\" ng-click=\"authCtrl.createNewUser($event)\">Sign Up</button>\r\n        <button type=\"submit\" class=\"btn btn-success  btn-lg btn-logIn\" ng-click=\"authCtrl.loginUser($event)\">Log In</button>\r\n    </form>\r\n</section>";
 
 /***/ },
-/* 35 */
-/***/ function(module, exports) {
-
-module.exports = "<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-offset-4 col-sm-4\">\r\n            <form class=\"todo-form\" ng-submit=\"editCtrl.updateTodo($event)\">\r\n                <div class=\"form-group\">\r\n                    <label for=\"title\">Title</label>\r\n                    <input type=\"text\" id=\"title\" class=\"form-control\" name=\"title\" ng-model=\"editCtrl.todo.title\"\r\n                           placeholder=\"todo title\">\r\n                </div>\r\n\r\n                <div class=\"form-group\">\r\n                    <label for=\"todoDescription\">Description</label>\r\n                    <textarea class=\"form-control\" id=\"todoDescription\" rows=\"3\" placeholder=\"Description\"\r\n                              ng-model=\"editCtrl.todo.description\"></textarea>\r\n                </div>\r\n                <div class=\"form-group\">\r\n                    <label for=\"datepicker\">Deadline date</label>\r\n                    <input type=\"text\" id=\"datepicker\" class=\"form-control\" ng-model=\"editCtrl.todo.deadline\"\r\n                           placeholder=\"todo deadline\" mydatepicker/>\r\n                </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"status\">Status</label>\r\n                        <div class=\"select\" id=\"status\">\r\n                            <select ng-model=\"editCtrl.statusId\" class=\"form-control\">\r\n                                <option ng-repeat=\"column in editCtrl.columns\" value=\"{{column.id}}\">{{column.name}}\r\n                                </option>\r\n                            </select>\r\n                        </div>\r\n                    </div>\r\n                <div class=\"checkbox\">\r\n                    <input type=\"checkbox\" id=\"isUrgent\" name=\"isUrgent\"\r\n                           ng-model=\"editCtrl.todo.isUrgent\"\r\n                           ng-checked=\"editCtrl.todo.isUrgent\"><label for=\"isUrgent\">Срочный </label>\r\n                </div>\r\n\r\n\r\n\r\n\r\n                <button type=\"submit\" class=\"btn btn-success\">Save todo</button>\r\n                <button ng-click=\"editCtrl.cancelEditing\" class=\"btn btn-primary toRight\">Cancel</button>\r\n            </form>\r\n        </div>\r\n\r\n    </div>\r\n</div>";
-
-/***/ },
-/* 36 */
-/***/ function(module, exports) {
-
-module.exports = "<div class=\"container-fluid\">\r\n    <div class=\"row filtersRow\">\r\n        <div class=\"col-sm-3\">\r\n            <h2>Filter by:</h2>\r\n            <div class=\"select\">\r\n                <select ng-model=\"listCtrl.selectedParam\" class=\"form-control\"\r\n                        ng-change=\"listCtrl.setOrderParam(listCtrl.selectedParam)\">\r\n                    <option ng-repeat=\"filterParam in listCtrl.filterParams\" value=\"{{filterParam.value}}\">{{filterParam.name}}</option>\r\n                </select>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-6 col-md-3\" ng-repeat=\"column in listCtrl.columns  track by $index\">\r\n            <div class=\"column\">\r\n                <div>\r\n                    <h2 class=\"columnTitle\">{{column.name}}</h2>\r\n                    <ul>\r\n                        <!--| filter: listCtrl.selectParam-->\r\n                        <li class=\"todo\" ng-repeat=\"todo in listCtrl.getTodos(column)  | orderBy: listCtrl.getOrderParam() track by $index\">\r\n                            <one-todo todo=\"todo\" columns=\"listCtrl.columns\" deleteTodo=\"deleteTodo()\"></one-todo>\r\n                            <p></p>\r\n                        </li>\r\n                    </ul>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>";
-
-/***/ },
-/* 37 */
-/***/ function(module, exports) {
-
-module.exports = "<nav class=\"navbar navbar-default\">\r\n    <div class=\"container-fluid\">\r\n        <div class=\"collapse navbar-collapse\">\r\n            <ul class=\"nav navbar-nav\">\r\n                <li><a ui-sref=\"all\">All</a></li>\r\n                <li><a ui-sref=\"todo\">Todo</a></li>\r\n                <li><a ui-sref=\"inprocess\">In Process</a></li>\r\n                <li><a ui-sref=\"testing\">Testing</a></li>\r\n                <li><a ui-sref=\"done\">Done</a></li>\r\n                <li><a ui-sref=\"addtodo\">Add Todo</a></li>\r\n                <li ng-click=\"navCtrl.logOut()\" class=\"log-out\" ng-show=\"navCtrl.show\"><a ui-sref=\"addtodo\">Logout</a></li>\r\n            </ul>\r\n        </div><!-- /.navbar-collapse -->\r\n    </div><!-- /.container-fluid -->\r\n</nav>";
-
-/***/ },
 /* 38 */
+/***/ function(module, exports) {
+
+module.exports = "<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-offset-4 col-sm-4\">\r\n            <form class=\"todo-form\" ng-submit=\"editCtrl.updateTodo($event)\">\r\n                <div class=\"form-group\">\r\n                    <label for=\"title\">Title</label>\r\n                    <input type=\"text\" id=\"title\" class=\"form-control\" name=\"title\" ng-model=\"editCtrl.todo.title\"\r\n                           placeholder=\"todo title\">\r\n                </div>\r\n\r\n                <div class=\"form-group\">\r\n                    <label for=\"todoDescription\">Description</label>\r\n                    <textarea class=\"form-control\" id=\"todoDescription\" rows=\"3\" placeholder=\"Description\"\r\n                              ng-model=\"editCtrl.todo.description\"></textarea>\r\n                </div>\r\n                <div class=\"form-group\">\r\n                    <label for=\"datepicker\">Deadline date</label>\r\n                    <input type=\"text\" id=\"datepicker\" class=\"form-control\" ng-model=\"editCtrl.todo.deadline\"\r\n                           placeholder=\"todo deadline\" mydatepicker/>\r\n                </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"status\">Status</label>\r\n                        <div class=\"select\" id=\"status\">\r\n                            <select ng-model=\"editCtrl.statusId\" class=\"form-control\">\r\n                                <option ng-repeat=\"column in editCtrl.columns\" value=\"{{column.id}}\">{{column.name}}\r\n                                </option>\r\n                            </select>\r\n                        </div>\r\n                    </div>\r\n                <div class=\"checkbox\">\r\n                    <input type=\"checkbox\" id=\"isUrgent\" name=\"isUrgent\"\r\n                           ng-model=\"editCtrl.todo.isUrgent\"\r\n                           ng-checked=\"editCtrl.todo.isUrgent\"><label for=\"isUrgent\">Срочный </label>\r\n                </div>\r\n\r\n                <button type=\"submit\" class=\"btn btn-success\">Save todo</button>\r\n                <button ng-click=\"editCtrl.cancelEditing\" class=\"btn btn-primary toRight\">Cancel</button>\r\n            </form>\r\n        </div>\r\n\r\n    </div>\r\n</div>";
+
+/***/ },
+/* 39 */
+/***/ function(module, exports) {
+
+module.exports = "<div class=\"container-fluid\">\r\n    <div class=\"row filtersRow\">\r\n        <div class=\"col-sm-3\">\r\n            <todo-filters></todo-filters>\r\n        </div>\r\n    </div>\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-6 col-md-3\" ng-repeat=\"column in columns  track by $index\">\r\n            <div class=\"column\">\r\n                <todo-column></todo-column>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>";
+
+/***/ },
+/* 40 */
+/***/ function(module, exports) {
+
+module.exports = "<nav class=\"navbar navbar-default\">\r\n    <div class=\"container-fluid\">\r\n        <div class=\"collapse navbar-collapse\">\r\n            <ul class=\"nav navbar-nav\">\r\n                <li><a ui-sref=\"all\">All</a></li>\r\n                <li><a ui-sref=\"todo({id: 0})\">Todo</a></li>\r\n                <li><a ui-sref=\"inprocess({id: 1})\">In Process</a></li>\r\n                <li><a ui-sref=\"testing({id: 2})\">Testing</a></li>\r\n                <li><a ui-sref=\"done({id: 3})\">Done</a></li>\r\n                <li><a ui-sref=\"addtodo\">Add Todo</a></li>\r\n                <li ng-click=\"navCtrl.logOut()\" class=\"log-out\" ng-show=\"navCtrl.show\"><a ui-sref=\"addtodo\">Logout</a></li>\r\n            </ul>\r\n        </div><!-- /.navbar-collapse -->\r\n    </div><!-- /.container-fluid -->\r\n</nav>";
+
+/***/ },
+/* 41 */
+/***/ function(module, exports) {
+
+module.exports = "<h2>Filter by:</h2>\r\n<div class=\"select\">\r\n    <select ng-model=\"selectedParam\" class=\"form-control\"\r\n            ng-change=\"setOrderParam(selectedParam)\">\r\n        <option ng-repeat=\"filterParam in filterParams\" value=\"{{filterParam.value}}\">{{filterParam.name}}</option>\r\n    </select>\r\n</div>";
+
+/***/ },
+/* 42 */
 /***/ function(module, exports) {
 
 module.exports = "<section class=\"todoWrapper\" ng-class=\"{urgent:todo.isUrgent}\">\r\n\r\n    <uib-accordion close-others=\"oneAtATime\">\r\n        <div uib-accordion-group class=\"panel-default\"\r\n             is-open=\"status.isFirstOpen\">\r\n            <div uib-accordion-heading>\r\n                <div class=\"row\">\r\n                    <div class=\"col-xs-2 interact-icons\">\r\n                        <a ui-sref=\"edittodo({id:todo.id})\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a>\r\n                    </div>\r\n                    <div class=\"col-xs-8\">\r\n                        <div class=\"mainWrapper\">\r\n                            <div class=\"title\">{{todo.title}}</div>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"col-xs-2 interact-icons delete\">\r\n                        <i class=\"fa fa-times\" aria-hidden=\"true\" ng-click=\"todoCtrl.deleteTodo(todo)\"></i>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                    <h2>Deadline</h2>\r\n                    <p class=\"deadlineTodo\">{{todo.deadline}}</p></div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-6\">\r\n                    <div class=\"checkbox\">\r\n                        <input type=\"checkbox\" class=\"oneTodocheckbox\" ng-click=\"todoCtrl.makeUrgent($event,todo)\"\r\n                               ng-checked='todo.isUrgent'>\r\n                        <span class=\"oneTodoLabel\">Urgent </span>\r\n                    </div>\r\n                </div>\r\n                <div class=\"col-sm-6\">\r\n                    <div class=\"select\">\r\n                        <select ng-model=\"todoCtrl.column\" class=\"form-control\"\r\n                                ng-change=\"todoCtrl.selectChanged(todoCtrl.column,todo)\">\r\n                            <option ng-repeat=\"column in columns\" value=\"{{column.id}}\">{{column.name}}</option>\r\n                        </select>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                    <h2>Descriptrion:</h2>\r\n                    <p>{{todo.description}}</p>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </uib-accordion>\r\n\r\n\r\n</section>";
 
 /***/ },
-/* 39 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 //require("jquery");
+__webpack_require__(19);
+__webpack_require__(18);
 __webpack_require__(16);
-__webpack_require__(15);
-__webpack_require__(13);
+__webpack_require__(17);
 __webpack_require__(14);
-__webpack_require__(11);
-__webpack_require__(10);
-__webpack_require__(12);
+__webpack_require__(13);
+__webpack_require__(15);
 __webpack_require__(0);
-__webpack_require__(9);
+__webpack_require__(12);
 __webpack_require__(2);
-__webpack_require__(7);
+__webpack_require__(5);
 __webpack_require__(6);
-__webpack_require__(8);
+__webpack_require__(7);
+__webpack_require__(2);
+__webpack_require__(10);
+__webpack_require__(9);
+__webpack_require__(11);
 __webpack_require__(3);
 __webpack_require__(4);
-__webpack_require__(5);
-__webpack_require__(17);
+__webpack_require__(8);
+__webpack_require__(20);
 
 
 
+
+/***/ },
+/* 44 */
+/***/ function(module, exports) {
+
+module.exports = "<h2 class='columnTitle'>{{column.name}}</h2><ul><li class='todo' ng-repeat='todo in getTodos(column)  | orderBy: getOrderParam() track by $index'><one-todo todo='todo' columns='columns' deleteTodo='deleteTodo()'></one-todo></li></ul>\r\n";
 
 /***/ }
 /******/ ]);

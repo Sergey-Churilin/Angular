@@ -1,0 +1,1 @@
+<h2 class='columnTitle'>{{column.name}}</h2><ul><li class='todo' ng-repeat='todo in getTodos(column)  | orderBy: getOrderParam() track by $index'><one-todo todo='todo' columns='columns' deleteTodo='deleteTodo()'></one-todo></li></ul>

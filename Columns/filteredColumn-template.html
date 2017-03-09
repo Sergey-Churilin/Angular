@@ -1,24 +1,13 @@
 <div class="container">
     <div class="row filtersRow">
-        <div class="col-sm-offset-4 col-sm-4">
-            <h2>Filter by:</h2>
-            <div class="select">
-                <select ng-model="colCtrl.selectedParam" class="form-control"
-                        ng-change="colCtrl.setOrderParam(colCtrl.selectedParam)">
-                    <option ng-repeat="filterParam in colCtrl.filterParams" value="{{filterParam.value}}">{{filterParam.name}}</option>
-                </select>
-            </div>
+        <div class="col-sm-offset-4 col-sm-4 ">
+            <todo-filters></todo-filters>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-offset-4 col-sm-4">
             <div class="columnWrapper">
-                <h2 class="columnTitle">{{colCtrl.column.name}}</h2>
-                <ul>
-                    <li class="todo" ng-repeat="todo in colCtrl.getTodos(column) | orderBy: colCtrl.getOrderParam() track by $index">
-                        <one-todo todo="todo" columns="colCtrl.columns" deleteTodo="deleteTodo()"></one-todo>
-                    </li>
-                </ul>
+                <todo-column></todo-column>
             </div>
         </div>
     </div>
