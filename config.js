@@ -7,13 +7,15 @@ const config =  app.config(['$stateProvider', '$urlRouterProvider', function ($s
             url: '/all',
             controller:'ListController',
             controllerAs:'listCtrl',
-            templateUrl: "ListWrapper/list-template.html",
+            template:require("./ListWrapper/list-template.html")
+            // templateUrl: "ListWrapper/list-template.html",
         })
         .state('todo', {
             url: '/todo',
             controller:'ColumnController',
             controllerAs:'colCtrl',
-            templateUrl: "Columns/filteredColumn-template.html",
+            template:require("./Columns/filteredColumn-template.html"),
+            // templateUrl: "Columns/filteredColumn-template.html",
             params:{
                 id:0
             }
@@ -22,7 +24,8 @@ const config =  app.config(['$stateProvider', '$urlRouterProvider', function ($s
             url: '/inprocess',
             controller:'ColumnController',
             controllerAs:'colCtrl',
-            templateUrl: "Columns/filteredColumn-template.html",
+            template:require("./Columns/filteredColumn-template.html"),
+            // templateUrl: "Columns/filteredColumn-template.html",
             params:{
                 id:1
             }
@@ -31,7 +34,8 @@ const config =  app.config(['$stateProvider', '$urlRouterProvider', function ($s
             url: '/testing',
             controller:'ColumnController',
             controllerAs:'colCtrl',
-            templateUrl: "Columns/filteredColumn-template.html",
+            template:require("./Columns/filteredColumn-template.html"),
+            // templateUrl: "Columns/filteredColumn-template.html",
             params:{
                 id:2
             }
@@ -40,7 +44,8 @@ const config =  app.config(['$stateProvider', '$urlRouterProvider', function ($s
             url: '/done',
             controller:'ColumnController',
             controllerAs:'colCtrl',
-            templateUrl: "Columns/filteredColumn-template.html",
+            template:require("./Columns/filteredColumn-template.html"),
+            // templateUrl: "Columns/filteredColumn-template.html",
             params:{
                 id:3
             }
@@ -49,18 +54,21 @@ const config =  app.config(['$stateProvider', '$urlRouterProvider', function ($s
             url: '/edittodo/:id',
             controller:'EditTodoController',
             controllerAs:'editCtrl',
-            templateUrl: "EditTodo/editTodo-template.html",
+            template:require("./EditTodo/editTodo-template.html"),
+            // templateUrl: "EditTodo/editTodo-template.html",
         })
         .state('addtodo', {
             url: '/addtodo',
             controller:'AddTodoController',
             controllerAs:'addTodoCtrl',
-            templateUrl: "AddTodo/add-todo-template.html",
+            template:require("./AddTodo/add-todo-template.html"),
+            // templateUrl: "AddTodo/add-todo-template.html",
         })
         .state('auth', {
             url: '/auth',
             controller:'AuthController',
             controllerAs:'authCtrl',
-            templateUrl: "Authorization/auth-template.html",
+            template:require("./Authorization/auth-template.html"),
+            // templateUrl: "Authorization/auth-template.html",
         })
 }]);

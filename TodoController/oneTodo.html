@@ -1,30 +1,53 @@
 <section class="todoWrapper" ng-class="{urgent:todo.isUrgent}">
-    <div class="row">
 
-        <div class="col-sm-offset-2 col-sm-8">
-            <div class="mainWrapper">
-                <div class="title">{{todo.title}}</div>
+    <uib-accordion close-others="oneAtATime">
+        <div uib-accordion-group class="panel-default"
+             is-open="status.isFirstOpen">
+            <div uib-accordion-heading>
+                <div class="row">
+                    <div class="col-xs-2 interact-icons">
+                        <a ui-sref="edittodo({id:todo.id})"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                    </div>
+                    <div class="col-xs-8">
+                        <div class="mainWrapper">
+                            <div class="title">{{todo.title}}</div>
+                        </div>
+                    </div>
+                    <div class="col-xs-2 interact-icons delete">
+                        <i class="fa fa-times" aria-hidden="true" ng-click="todoCtrl.deleteTodo(todo)"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2>Deadline</h2>
+                    <p class="deadlineTodo">{{todo.deadline}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="checkbox">
+                        <input type="checkbox" class="oneTodocheckbox" ng-click="todoCtrl.makeUrgent($event,todo)"
+                               ng-checked='todo.isUrgent'>
+                        <span class="oneTodoLabel">Urgent </span>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="select">
+                        <select ng-model="todoCtrl.column" class="form-control"
+                                ng-change="todoCtrl.selectChanged(todoCtrl.column,todo)">
+                            <option ng-repeat="column in columns" value="{{column.id}}">{{column.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2>Descriptrion:</h2>
+                    <p>{{todo.description}}</p>
+                </div>
             </div>
         </div>
-        <div class="col-sm-2 interact-icons">
-            <a ui-sref="edittodo({id:todo.id})"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-            <i class="fa fa-times" aria-hidden="true" ng-click="todoCtrl.deleteTodo(todo)"></i>
-        </div>
-    </div>
-    <div class="row">
+    </uib-accordion>
 
-     <!--   <div class="col-sm-6">
-            <div class="checkbox">
-                <input type="checkbox" class="oneTodocheckbox" ng-click="todoCtrl.makeUrgent($event,todo)" ng-checked='todo.isUrgent'>
-                <span class="oneTodoLabel">Urgent </span>
-            </div>
-        </div>-->
-<!--        <div class="col-sm-offset-3 col-sm-6">
-            <div class="select">
-                <select ng-model="todoCtrl.column" class="form-control" ng-change="todoCtrl.selectChanged(todoCtrl.column,todo)">
-                    <option ng-repeat="column in columns" value="{{column.id}}">{{column.name}}</option>
-                </select>
-            </div>
-        </div>-->
-    </div>
+
 </section>

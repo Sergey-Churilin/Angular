@@ -7,6 +7,12 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
     }
     let isDataDownloadedFromServer = false;
     let isDownloading = false;
+    // const filterParams = ['deadline','title','-isUrgent'];
+    const filterParams = [
+        {'name':'Deadline','value':'deadline'},
+        {'name':'Name','value':'title'},
+        {'name':'Urgent','value':'-isUrgent'},
+        ];
     const todoService = {};
     //get data
     todoService.getDataFromServer = function (callback) {
@@ -145,6 +151,10 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
         }
     };
 
+    todoService.filterParams = function () {
+        return filterParams;
+    }
+
     return todoService;
 }]);
 
@@ -176,7 +186,7 @@ app.factory('authService', ['$http','$state',function ($http,$state) {
     const authService = {};
     // = false;
     let user = JSON.parse(localStorage.getItem('user'));
-    let isLogged ;
+    let isLogged;
     authService.createNewUser = function (authData,callback) {
         if(authData.remember){
             localStorage.setItem('user',JSON.stringify(authData));
@@ -229,7 +239,7 @@ app.factory('authService', ['$http','$state',function ($http,$state) {
     };
 
     authService.isLoggedIn = function () {
-        isLogged = (user && user != {}) ? true : false;
+        isLogged = (user && user != {});
         return isLogged;
     };
 

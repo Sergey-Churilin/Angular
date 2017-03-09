@@ -102,7 +102,7 @@ app.post('/updatetodo', function (req, res) {
                     todoToUpdate.deadline = currentTodo.deadline;
 
                     // Save the updated document back to the database
-                    console.log('todoToUpdate.statusId = '+todoToUpdate.statusId);
+                    // console.log('todoToUpdate.statusId = '+todoToUpdate.statusId);
                     user.markModified('userTodos');
                     user.save(function (err, user) {
                         if (err) {
@@ -125,7 +125,7 @@ app.post('/getdata', function (req, res) {
             console.log('no id')
         }
         if (user) {
-            console.log('user = ' + user);
+            // console.log('user = ' + user);
             res.send(user.userTodos);
         } else {
             res.status(403).send('User with this login does not exist');

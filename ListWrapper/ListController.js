@@ -1,11 +1,13 @@
 var app = require('../app.js');
 
-app.controller('ListController', ['$scope','$state','todoService','columnsService','authService', function ($scope,$state,todoService,columnsService,authService) {
-    this.show = authService.isLoggedIn();
+app.controller('ListController', ['todoService', 'columnsService', function (todoService, columnsService) {
     this.columns = columnsService.getColumns();
+    this.filterParams = todoService.filterParams();
+    this.selectedParam = this.filterParams[0];
     this.todoLists = [];
+
     todoService.getAllTodos((data) => {
-        if(data){
+        if (data) {
             this.todoLists = data;
         }
     });
@@ -14,25 +16,13 @@ app.controller('ListController', ['$scope','$state','todoService','columnsServic
         return todoService.getFilteredTodos(column);
     };
 
-    this.logOut = function () {
-        authService.logOut();
+    this.getOrderParam = function () {
+        return this.selectedParam;
+    };
+
+    this.setOrderParam = function (newParam) {
+        this.selectedParam = newParam;
     }
 }]);
 
-app.directive('todoList', function () {
-    return {
-        controller: 'ListController',
-        controllerAs: "listCtrl",
-        template: require("./list-template.html")
-    }
-});
-
-app.directive('oneColumn', function () {
-    return {
-        controller: 'ListController',
-        controllerAs: "listCtrl",
-        template: require("./oneColumn-template.html"),
-        replace:true
-    }
-});
 

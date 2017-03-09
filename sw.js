@@ -9,7 +9,7 @@ event.waitUntil(
                 '/AddTodo/add-todo-template.html',
                 '/templates/editTodo-template.html',
                 '/templates/filteredColumn-template.html',
-                '/templates/oneColumn-template.html',
+                // '/templates/oneColumn-template.html',
                 '/templates/oneTodo.html',
                 '/app.js',
                 '/TodoController/ColumnController.js',

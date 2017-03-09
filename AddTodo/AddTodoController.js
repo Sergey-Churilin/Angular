@@ -21,20 +21,21 @@ app.controller('AddTodoController',['$state','$rootScope','todoService',function
     };
 }]);
 
-app.directive('addTodo',function () {
+/*app.directive('addTodo',function () {
     return {
         controller:'AddTodoController',
         controllerAs:"addTodoCtrl",
         template: require("./add-todo-template.html")
     }
-});
+});*/
 
 app.directive('mydatepicker', function () {
     return {
         restrict: 'A',
         link: function (scope, element, attrs, ngModelCtrl) {
             element.datepicker({
-                minDate: new Date()
+                minDate: new Date(),
+                dateFormat: 'dd-mm-yy'
             });
         }
     };

@@ -21,8 +21,7 @@
                     <div class="form-group">
                         <label for="status">Status</label>
                         <div class="select" id="status">
-                            <select ng-model="editCtrl.todo.newstatusId" class="form-control"
-                                    ng-change="editCtrl.selectChanged(editCtrl.column,editCtrl.todo)">
+                            <select ng-model="editCtrl.statusId" class="form-control">
                                 <option ng-repeat="column in editCtrl.columns" value="{{column.id}}">{{column.name}}
                                 </option>
                             </select>
@@ -37,7 +36,8 @@
 
 
 
-                <button type="submit" class="btn btn-default">Save todo</button>
+                <button type="submit" class="btn btn-success">Save todo</button>
+                <button ng-click="editCtrl.cancelEditing" class="btn btn-primary toRight">Cancel</button>
             </form>
         </div>
 

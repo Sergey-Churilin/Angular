@@ -1,18 +1,7 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-/*var WunderlistSchema = new Schema(
-    {
-        title: {type: String},
-        description: {type: String},
-        status: { type: String },
-        statusId: { type: Number },
-        isUrgent: { type: Boolean },
-        id: { type: Number }
-    }
-);*/
-
-var UserSchema = new Schema(
+const UserSchema = new Schema(
     {
         userLogin: {type: String,dropDups: true},
         userPassword: {type: String},
@@ -20,8 +9,6 @@ var UserSchema = new Schema(
     }
 );
 
-// var WunderlistModel = mongoose.model('Wunderlist', WunderlistSchema);
-var UserModel = mongoose.model('Wunderlist', UserSchema);
+const UserModel = mongoose.model('Wunderlist', UserSchema);
 
-// module.exports = WunderlistModel;
 module.exports = UserModel;

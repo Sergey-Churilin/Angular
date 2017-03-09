@@ -38,6 +38,7 @@ body{
 .column{
     border: 1px solid deepskyblue;
     border-radius: 10px;
+    margin-bottom: 30px;
 }
 
 .columnTitle{
@@ -72,12 +73,22 @@ ul{
     width: 100px;
     margin-left: 10px;
 }*/
+
+.filtersRow{
+    margin-bottom: 30px;
+}
+
+.toRight{
+    float: right;
+}
+
 .mainWrapper .title{
     font-size: 32px;
     line-height: 32px;
     color: #333;
     text-align: center;
-    margin-bottom: 20px;
+    /*margin-top: -30px;*/
+    /*margin-bottom: 20px;*/
 }
 .photo{
     margin-left: 170px;
@@ -89,13 +100,35 @@ ul{
 ul{
     padding-left: 0;
 }
-
+.interact-icons{
+    margin-top: -10px;
+}
 .interact-icons .fa{
     cursor: pointer;
+    font-size: 22px;
+    text-align: right;
+    /*padding-top: 6px;*/
+}
+
+.deadlineTodo{
+    background: rgba(255, 0, 0, 0.6);
+    /*text-align: center;*/
+    /*margin: 20px 0;*/
+}
+
+.interact-icons.delete{
+    text-align: right;
+}
+.panel-heading{
+    padding: 10px 0;
 }
 
 .checkbox input[type=checkbox]{
     margin-left: 0;
+}
+.checkbox{
+    margin-top: 0;
+    margin-bottom: 0;
 }
 .oneTodocheckbox{
     width: 20px;

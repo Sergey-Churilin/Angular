@@ -34,10 +34,11 @@ app.controller('AuthController', ['authService','md5', function (authService,md5
 
 }]);
 
+/*
 app.directive('authForm', function () {
     return {
         controller: 'AuthController',
         controllerAs: "authCtrl",
         template: require("./auth-template.html")
     }
-});
+});*/

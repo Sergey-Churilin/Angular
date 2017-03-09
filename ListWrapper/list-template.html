@@ -1,12 +1,29 @@
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-3" ng-repeat="column in listCtrl.columns  track by $index">
-            <div class="column">
-                <one-column></one-column>
+    <div class="row filtersRow">
+        <div class="col-sm-3">
+            <h2>Filter by:</h2>
+            <div class="select">
+                <select ng-model="listCtrl.selectedParam" class="form-control"
+                        ng-change="listCtrl.setOrderParam(listCtrl.selectedParam)">
+                    <option ng-repeat="filterParam in listCtrl.filterParams" value="{{filterParam.value}}">{{filterParam.name}}</option>
+                </select>
             </div>
-
         </div>
     </div>
-    <!--<button  ></button>-->
+    <div class="row">
+        <div class="col-sm-6 col-md-3" ng-repeat="column in listCtrl.columns  track by $index">
+            <div class="column">
+                <div>
+                    <h2 class="columnTitle">{{column.name}}</h2>
+                    <ul>
+                        <!--| filter: listCtrl.selectParam-->
+                        <li class="todo" ng-repeat="todo in listCtrl.getTodos(column)  | orderBy: listCtrl.getOrderParam() track by $index">
+                            <one-todo todo="todo" columns="listCtrl.columns" deleteTodo="deleteTodo()"></one-todo>
+                            <p></p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
