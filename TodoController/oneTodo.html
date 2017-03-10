@@ -1,4 +1,4 @@
-<section class="todoWrapper" ng-class="{urgent:todo.isUrgent}">
+<section class="todoWrapper" ng-class="{urgent:todo.isUrgent}" ng-show="todoCtrl.showTodo(todo)">
 
     <uib-accordion close-others="oneAtATime">
         <div uib-accordion-group class="panel-default"

@@ -2,6 +2,8 @@ var app = require('../app.js');
 
 app.controller('TodoController', ['$location', '$scope','todoService', function ($location,$scope, todoService) {
     this.column = $scope.todo.statusId.toString();
+    this.showOnlyUrgent = false;
+    this.searchValue = '';
     this.deleteTodo = function (todo) {
         todoService.deleteTodo(todo);
     };
@@ -11,6 +13,28 @@ app.controller('TodoController', ['$location', '$scope','todoService', function 
 
     this.makeUrgent = ($event, todo) => {
         todoService.makeUrgent(todo);
+    };
+    
+    $scope.$on("showUrgent",(event,args) => {
+        this.showOnlyUrgent = args.show;
+    });
+
+    $scope.$on('searchByValue',(event,args) => {
+        this.searchValue = args.searchValue;
+    });
+
+    this.showTodo = function (todo) {
+        let show = true;
+
+        if(this.searchValue){
+            show = todoService.filterTodoBySearch(todo,this.searchValue);
+        }
+
+        if(this.showOnlyUrgent && show){
+            show = todo.isUrgent;
+        }
+
+        return show;
     };
 
 }]);

@@ -153,7 +153,28 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
 
     todoService.filterParams = function () {
         return filterParams;
-    }
+    };
+
+    todoService.filterTodoBySearch = function (todo,searchValue) {
+        let containsSearchVal = false;
+        const neededString = searchValue.toLocaleLowerCase();
+        if(todo.title){
+            const neededTitle = todo.title.toLocaleLowerCase();
+            if(neededTitle.indexOf(searchValue) >=0){
+                containsSearchVal = true;
+            }
+        }
+
+        if(!containsSearchVal){
+            if(todo.description){
+                const neededDesc = todo.description.toLocaleLowerCase();
+                if(neededDesc.indexOf(searchValue) >=0){
+                    containsSearchVal = true;
+                }
+            }
+        }
+        return containsSearchVal;
+    };
 
     return todoService;
 }]);

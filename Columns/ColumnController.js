@@ -2,6 +2,7 @@ var app = require('../app.js');
 
 app.controller('ColumnController', ['$stateParams', '$scope','todoService', 'columnsService', function ($stateParams,$scope,todoService, columnsService) {
     $scope.columns = columnsService.getColumns();
+    $scope.isUrgent = false;
     if($stateParams){
         $scope.column = $scope.columns[$stateParams.id];
     }
@@ -25,6 +26,15 @@ app.controller('ColumnController', ['$stateParams', '$scope','todoService', 'col
 
     $scope.setOrderParam = function (newParam) {
         $scope.selectedParam = newParam;
+    };
+
+    $scope.showOnlyUrgent = function () {
+        $scope.isUrgent = !$scope.isUrgent;
+        $scope.$broadcast('showUrgent',{'show':$scope.isUrgent});
+    };
+
+    $scope.filterByValue = function () {
+        $scope.$broadcast('searchByValue',{'searchValue':$scope.searchValue});
     }
 
 }]);

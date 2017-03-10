@@ -61,7 +61,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 43);
+/******/ 	return __webpack_require__(__webpack_require__.s = 44);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -73,21 +73,24 @@ var app = angular.module('app', ['ui.router','angular-md5','ui.bootstrap','ngAni
 
 app.run(['$rootScope', '$state','authService', function ($rootScope, $state,authService) {
         $rootScope.$on('$stateChangeStart', function (event,toState,toParams,fromState) {
-            $rootScope.previousState = fromState;
-            if (!authService.isLoggedIn() && toState.name !== 'auth') {
-                console.log('DENY : Redirecting to Login');
-                event.preventDefault();
-                $state.go('auth')
+
+            if (!authService.isLoggedIn()) {
+                if(toState.name !== 'auth'){
+                    console.log('DENY : Redirecting to Login');
+                    event.preventDefault();
+                    $state.go('auth')
+                }
             }
             else {
-                console.log('ALLOW');
+                if(toState.name === 'auth'){
+                    event.preventDefault();
+                    $state.go('all');
+                }
             }
         });
     }]);
 
 module.exports = app;
-//
-
 
 
 
@@ -190,6 +193,7 @@ var app = __webpack_require__(0);
 
 app.controller('ColumnController', ['$stateParams', '$scope','todoService', 'columnsService', function ($stateParams,$scope,todoService, columnsService) {
     $scope.columns = columnsService.getColumns();
+    $scope.isUrgent = false;
     if($stateParams){
         $scope.column = $scope.columns[$stateParams.id];
     }
@@ -213,6 +217,15 @@ app.controller('ColumnController', ['$stateParams', '$scope','todoService', 'col
 
     $scope.setOrderParam = function (newParam) {
         $scope.selectedParam = newParam;
+    };
+
+    $scope.showOnlyUrgent = function () {
+        $scope.isUrgent = !$scope.isUrgent;
+        $scope.$broadcast('showUrgent',{'show':$scope.isUrgent});
+    };
+
+    $scope.filterByValue = function () {
+        $scope.$broadcast('searchByValue',{'searchValue':$scope.searchValue});
     }
 
 }]);
@@ -243,7 +256,7 @@ var app = __webpack_require__(0);
 
 app.directive('todoColumn', function () {
     return {
-        template:__webpack_require__(44)
+        template:__webpack_require__(41)
     };
 });
 
@@ -256,8 +269,7 @@ var app = __webpack_require__(0);
 
 app.directive('todoFilters', function () {
     return {
-        // restrict: 'A',
-        template:__webpack_require__(41)
+        template:__webpack_require__(42)
     };
 });
 
@@ -362,6 +374,8 @@ var app = __webpack_require__(0);
 
 app.controller('TodoController', ['$location', '$scope','todoService', function ($location,$scope, todoService) {
     this.column = $scope.todo.statusId.toString();
+    this.showOnlyUrgent = false;
+    this.searchValue = '';
     this.deleteTodo = function (todo) {
         todoService.deleteTodo(todo);
     };
@@ -372,6 +386,28 @@ app.controller('TodoController', ['$location', '$scope','todoService', function 
     this.makeUrgent = ($event, todo) => {
         todoService.makeUrgent(todo);
     };
+    
+    $scope.$on("showUrgent",(event,args) => {
+        this.showOnlyUrgent = args.show;
+    });
+
+    $scope.$on('searchByValue',(event,args) => {
+        this.searchValue = args.searchValue;
+    });
+
+    this.showTodo = function (todo) {
+        let show = true;
+
+        if(this.searchValue){
+            show = todoService.filterTodoBySearch(todo,this.searchValue);
+        }
+
+        if(this.showOnlyUrgent && show){
+            show = todo.isUrgent;
+        }
+
+        return show;
+    };
 
 }]);
 
@@ -379,7 +415,7 @@ app.directive('oneTodo', function () {
     return {
         controller: 'TodoController',
         controllerAs: "todoCtrl",
-        template: __webpack_require__(42),
+        template: __webpack_require__(43),
         replace:true,
         scope:{
             'todo':'=',
@@ -5590,7 +5626,28 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
 
     todoService.filterParams = function () {
         return filterParams;
-    }
+    };
+
+    todoService.filterTodoBySearch = function (todo,searchValue) {
+        let containsSearchVal = false;
+        const neededString = searchValue.toLocaleLowerCase();
+        if(todo.title){
+            const neededTitle = todo.title.toLocaleLowerCase();
+            if(neededTitle.indexOf(searchValue) >=0){
+                containsSearchVal = true;
+            }
+        }
+
+        if(!containsSearchVal){
+            if(todo.description){
+                const neededDesc = todo.description.toLocaleLowerCase();
+                if(neededDesc.indexOf(searchValue) >=0){
+                    containsSearchVal = true;
+                }
+            }
+        }
+        return containsSearchVal;
+    };
 
     return todoService;
 }]);
@@ -53430,22 +53487,28 @@ module.exports = "<div class=\"container-fluid\">\r\n    <div class=\"row filter
 /* 40 */
 /***/ function(module, exports) {
 
-module.exports = "<nav class=\"navbar navbar-default\">\r\n    <div class=\"container-fluid\">\r\n        <div class=\"collapse navbar-collapse\">\r\n            <ul class=\"nav navbar-nav\">\r\n                <li><a ui-sref=\"all\">All</a></li>\r\n                <li><a ui-sref=\"todo({id: 0})\">Todo</a></li>\r\n                <li><a ui-sref=\"inprocess({id: 1})\">In Process</a></li>\r\n                <li><a ui-sref=\"testing({id: 2})\">Testing</a></li>\r\n                <li><a ui-sref=\"done({id: 3})\">Done</a></li>\r\n                <li><a ui-sref=\"addtodo\">Add Todo</a></li>\r\n                <li ng-click=\"navCtrl.logOut()\" class=\"log-out\" ng-show=\"navCtrl.show\"><a ui-sref=\"addtodo\">Logout</a></li>\r\n            </ul>\r\n        </div><!-- /.navbar-collapse -->\r\n    </div><!-- /.container-fluid -->\r\n</nav>";
+module.exports = "<nav class=\"navbar navbar-default\">\r\n    <div class=\"container-fluid\">\r\n        <div class=\"collapse navbar-collapse\">\r\n            <ul class=\"nav navbar-nav\">\r\n                <li><a ui-sref=\"all\">All</a></li>\r\n                <li><a ui-sref=\"todo\">Todo</a></li>\r\n                <li><a ui-sref=\"inprocess\">In Process</a></li>\r\n                <li><a ui-sref=\"testing\">Testing</a></li>\r\n                <li><a ui-sref=\"done\">Done</a></li>\r\n                <li><a ui-sref=\"addtodo\">Add Todo</a></li>\r\n                <li ng-click=\"navCtrl.logOut()\" class=\"log-out\" ng-show=\"navCtrl.show\"><a ui-sref=\"addtodo\">Logout</a></li>\r\n            </ul>\r\n        </div><!-- /.navbar-collapse -->\r\n    </div><!-- /.container-fluid -->\r\n</nav>";
 
 /***/ },
 /* 41 */
 /***/ function(module, exports) {
 
-module.exports = "<h2>Filter by:</h2>\r\n<div class=\"select\">\r\n    <select ng-model=\"selectedParam\" class=\"form-control\"\r\n            ng-change=\"setOrderParam(selectedParam)\">\r\n        <option ng-repeat=\"filterParam in filterParams\" value=\"{{filterParam.value}}\">{{filterParam.name}}</option>\r\n    </select>\r\n</div>";
+module.exports = "<h2 class='columnTitle'>{{column.name}}</h2><ul><li class='todo' ng-repeat='todo in getTodos(column)  | orderBy: getOrderParam() track by $index'><one-todo todo='todo' columns='columns' deleteTodo='deleteTodo()'></one-todo></li></ul>\r\n";
 
 /***/ },
 /* 42 */
 /***/ function(module, exports) {
 
-module.exports = "<section class=\"todoWrapper\" ng-class=\"{urgent:todo.isUrgent}\">\r\n\r\n    <uib-accordion close-others=\"oneAtATime\">\r\n        <div uib-accordion-group class=\"panel-default\"\r\n             is-open=\"status.isFirstOpen\">\r\n            <div uib-accordion-heading>\r\n                <div class=\"row\">\r\n                    <div class=\"col-xs-2 interact-icons\">\r\n                        <a ui-sref=\"edittodo({id:todo.id})\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a>\r\n                    </div>\r\n                    <div class=\"col-xs-8\">\r\n                        <div class=\"mainWrapper\">\r\n                            <div class=\"title\">{{todo.title}}</div>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"col-xs-2 interact-icons delete\">\r\n                        <i class=\"fa fa-times\" aria-hidden=\"true\" ng-click=\"todoCtrl.deleteTodo(todo)\"></i>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                    <h2>Deadline</h2>\r\n                    <p class=\"deadlineTodo\">{{todo.deadline}}</p></div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-6\">\r\n                    <div class=\"checkbox\">\r\n                        <input type=\"checkbox\" class=\"oneTodocheckbox\" ng-click=\"todoCtrl.makeUrgent($event,todo)\"\r\n                               ng-checked='todo.isUrgent'>\r\n                        <span class=\"oneTodoLabel\">Urgent </span>\r\n                    </div>\r\n                </div>\r\n                <div class=\"col-sm-6\">\r\n                    <div class=\"select\">\r\n                        <select ng-model=\"todoCtrl.column\" class=\"form-control\"\r\n                                ng-change=\"todoCtrl.selectChanged(todoCtrl.column,todo)\">\r\n                            <option ng-repeat=\"column in columns\" value=\"{{column.id}}\">{{column.name}}</option>\r\n                        </select>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                    <h2>Descriptrion:</h2>\r\n                    <p>{{todo.description}}</p>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </uib-accordion>\r\n\r\n\r\n</section>";
+module.exports = "<h2>Filter by:</h2>\r\n<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-3\">\r\n            <div class=\"select\">\r\n                <select ng-model=\"selectedParam\" class=\"form-control\"\r\n                        ng-change=\"setOrderParam(selectedParam)\">\r\n                    <option ng-repeat=\"filterParam in filterParams\" value=\"{{filterParam.value}}\">{{filterParam.name}}</option>\r\n                </select>\r\n            </div>\r\n        </div>\r\n        <div class=\"col-sm-3\">\r\n            <div class=\"checkbox\">\r\n                <input type=\"checkbox\" id=\"onlyUrgent\" class=\"oneTodocheckbox\" ng-click=\"showOnlyUrgent()\" ng-checked=\"isUrgent\">\r\n                <label for=\"onlyUrgent\" class=\"oneTodoLabel\">Only Urgent</label>\r\n            </div>\r\n        </div>\r\n        <div class=\"col-sm-3\">\r\n            <div class=\"form-group\">\r\n                <input type=\"text\" ng-change=\"filterByValue()\" class=\"form-control\" id=\"search\" name=\"search\" ng-model=\"searchValue\"\r\n                       placeholder=\"Search\">\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n";
 
 /***/ },
 /* 43 */
+/***/ function(module, exports) {
+
+module.exports = "<section class=\"todoWrapper\" ng-class=\"{urgent:todo.isUrgent}\" ng-show=\"todoCtrl.showTodo(todo)\">\r\n\r\n    <uib-accordion close-others=\"oneAtATime\">\r\n        <div uib-accordion-group class=\"panel-default\"\r\n             is-open=\"status.isFirstOpen\">\r\n            <div uib-accordion-heading>\r\n                <div class=\"row\">\r\n                    <div class=\"col-xs-2 interact-icons\">\r\n                        <a ui-sref=\"edittodo({id:todo.id})\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a>\r\n                    </div>\r\n                    <div class=\"col-xs-8\">\r\n                        <div class=\"mainWrapper\">\r\n                            <div class=\"title\">{{todo.title}}</div>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"col-xs-2 interact-icons delete\">\r\n                        <i class=\"fa fa-times\" aria-hidden=\"true\" ng-click=\"todoCtrl.deleteTodo(todo)\"></i>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                    <h2>Deadline</h2>\r\n                    <p class=\"deadlineTodo\">{{todo.deadline}}</p></div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-6\">\r\n                    <div class=\"checkbox\">\r\n                        <input type=\"checkbox\" class=\"oneTodocheckbox\" ng-click=\"todoCtrl.makeUrgent($event,todo)\"\r\n                               ng-checked='todo.isUrgent'>\r\n                        <span class=\"oneTodoLabel\">Urgent </span>\r\n                    </div>\r\n                </div>\r\n                <div class=\"col-sm-6\">\r\n                    <div class=\"select\">\r\n                        <select ng-model=\"todoCtrl.column\" class=\"form-control\"\r\n                                ng-change=\"todoCtrl.selectChanged(todoCtrl.column,todo)\">\r\n                            <option ng-repeat=\"column in columns\" value=\"{{column.id}}\">{{column.name}}</option>\r\n                        </select>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                    <h2>Descriptrion:</h2>\r\n                    <p>{{todo.description}}</p>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </uib-accordion>\r\n\r\n\r\n</section>";
+
+/***/ },
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 //require("jquery");
@@ -53473,12 +53536,6 @@ __webpack_require__(20);
 
 
 
-
-/***/ },
-/* 44 */
-/***/ function(module, exports) {
-
-module.exports = "<h2 class='columnTitle'>{{column.name}}</h2><ul><li class='todo' ng-repeat='todo in getTodos(column)  | orderBy: getOrderParam() track by $index'><one-todo todo='todo' columns='columns' deleteTodo='deleteTodo()'></one-todo></li></ul>\r\n";
 
 /***/ }
 /******/ ]);
