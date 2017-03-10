@@ -43,6 +43,7 @@ const config =  app.config(['$stateProvider', '$urlRouterProvider', function ($s
         .state('edittodo', {
             url: '/edittodo/:id',
             controller:'EditTodoController',
+            controllerAs:'editCtrl',
             template:require("./EditTodo/editTodo-template.html"),
         })
         .state('addtodo', {

@@ -9,7 +9,7 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
     let isDownloading = false;
     // const filterParams = ['deadline','title','-isUrgent'];
     const filterParams = [
-        {'name':'Deadline','value':'deadline'},
+        {'name':'Deadline','value':'deadlineTimestamp'},
         {'name':'Name','value':'title'},
         {'name':'Urgent','value':'-isUrgent'},
         ];
@@ -130,7 +130,14 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
     };
 
     todoService.getTodo = function (id) {
-        return todoServiceData.find((neededTodo) => neededTodo.id === id);
+        return todoServiceData.find((neededTodo) => {
+            if(neededTodo.id === Number(id)){
+                console.log("neededTodo.id = " + neededTodo.id)
+                console.log("Number(id) = " + Number(id))
+                return neededTodo;
+
+            }
+           });
     };
 
     todoService.makeUrgent = function (todo) {

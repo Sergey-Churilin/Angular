@@ -1,23 +1,28 @@
-<h2>Filter by:</h2>
-<div class="container">
+<div class="col-sm-12">
+    <div class="row">
+        <div class="col-sm-12"><h2>Filter by:</h2></div>
+    </div>
     <div class="row">
         <div class="col-sm-3">
             <div class="select">
                 <select ng-model="selectedParam" class="form-control"
                         ng-change="setOrderParam(selectedParam)">
-                    <option ng-repeat="filterParam in filterParams" value="{{filterParam.value}}">{{filterParam.name}}</option>
+                    <option ng-repeat="filterParam in filterParams" value="{{filterParam.value}}">{{filterParam.name}}
+                    </option>
                 </select>
             </div>
         </div>
         <div class="col-sm-3">
             <div class="checkbox">
-                <input type="checkbox" id="onlyUrgent" class="oneTodocheckbox" ng-click="showOnlyUrgent()" ng-checked="isUrgent">
+                <input type="checkbox" id="onlyUrgent" class="oneTodocheckbox" ng-click="showOnlyUrgent()"
+                       ng-checked="isUrgent">
                 <label for="onlyUrgent" class="oneTodoLabel">Only Urgent</label>
             </div>
         </div>
         <div class="col-sm-3">
             <div class="form-group">
-                <input type="text" ng-change="filterByValue()" class="form-control" id="search" name="search" ng-model="searchValue"
+                <input type="text" ng-change="filterByValue()" class="form-control" id="search" name="search"
+                       ng-model="searchValue"
                        placeholder="Search">
             </div>
         </div>

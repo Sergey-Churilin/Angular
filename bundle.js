@@ -73,7 +73,7 @@ var app = angular.module('app', ['ui.router','angular-md5','ui.bootstrap','ngAni
 
 app.run(['$rootScope', '$state','authService', function ($rootScope, $state,authService) {
         $rootScope.$on('$stateChangeStart', function (event,toState,toParams,fromState) {
-
+            $rootScope.previousState = fromState;
             if (!authService.isLoggedIn()) {
                 if(toState.name !== 'auth'){
                     console.log('DENY : Redirecting to Login');
@@ -121,6 +121,9 @@ app.controller('AddTodoController',['$state','$rootScope','todoService',function
         this.todo.isUrgent = this.todo.isUrgent || false;
         this.todo.photo='https://2.gravatar.com/avatar/50d10a8864accf0b2522c326381a4702?d=https%3A%2F%2Fidenticons.github.com%2F02e74f10e0327ad868d138f2b4fdd6f0.png&r=x';
         this.todo.id = Date.now();
+        const parts = this.todo.deadline.split('-');
+        const timestamp = new Date(parts[2],parts[0]-1,parts[1]).getTime();
+        this.todo.deadlineTimestamp = timestamp;
         todoService.addTodo(this.todo);
         this.todo = {};
         $state.go($rootScope.previousState.name)
@@ -284,15 +287,14 @@ const app = __webpack_require__(0);
 app.controller('EditTodoController', ['$stateParams', '$state', '$rootScope', 'todoService', 'columnsService',
     function ($stateParams, $state, $rootScope, todoService,columnsService) {
         this.todo = todoService.getTodo($stateParams.id);
-        // this.column = $scope.todo.statusId.toString();
         this.columns = columnsService.getColumns();
-        this.statusId = '0';
         if (!this.todo) {
             todoService.getAllTodos((data) => {
                 this.todo = todoService.getTodo(Number($stateParams.id));
                 this.statusId = this.todo.statusId.toString();
-                console.log('newStatusId = '+this.statusId);
             });
+        } else {
+            this.statusId = this.todo.statusId.toString();
         }
 
         this.updateTodo = function ($event) {
@@ -473,6 +475,7 @@ const config =  app.config(['$stateProvider', '$urlRouterProvider', function ($s
         .state('edittodo', {
             url: '/edittodo/:id',
             controller:'EditTodoController',
+            controllerAs:'editCtrl',
             template:__webpack_require__(38),
         })
         .state('addtodo', {
@@ -5482,7 +5485,7 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
     let isDownloading = false;
     // const filterParams = ['deadline','title','-isUrgent'];
     const filterParams = [
-        {'name':'Deadline','value':'deadline'},
+        {'name':'Deadline','value':'deadlineTimestamp'},
         {'name':'Name','value':'title'},
         {'name':'Urgent','value':'-isUrgent'},
         ];
@@ -5603,7 +5606,14 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
     };
 
     todoService.getTodo = function (id) {
-        return todoServiceData.find((neededTodo) => neededTodo.id === id);
+        return todoServiceData.find((neededTodo) => {
+            if(neededTodo.id === Number(id)){
+                console.log("neededTodo.id = " + neededTodo.id)
+                console.log("Number(id) = " + Number(id))
+                return neededTodo;
+
+            }
+           });
     };
 
     todoService.makeUrgent = function (todo) {
@@ -53475,13 +53485,13 @@ module.exports = "<section class=\"auth\">\r\n\r\n    <form class=\"auth-form\">
 /* 38 */
 /***/ function(module, exports) {
 
-module.exports = "<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-offset-4 col-sm-4\">\r\n            <form class=\"todo-form\" ng-submit=\"editCtrl.updateTodo($event)\">\r\n                <div class=\"form-group\">\r\n                    <label for=\"title\">Title</label>\r\n                    <input type=\"text\" id=\"title\" class=\"form-control\" name=\"title\" ng-model=\"editCtrl.todo.title\"\r\n                           placeholder=\"todo title\">\r\n                </div>\r\n\r\n                <div class=\"form-group\">\r\n                    <label for=\"todoDescription\">Description</label>\r\n                    <textarea class=\"form-control\" id=\"todoDescription\" rows=\"3\" placeholder=\"Description\"\r\n                              ng-model=\"editCtrl.todo.description\"></textarea>\r\n                </div>\r\n                <div class=\"form-group\">\r\n                    <label for=\"datepicker\">Deadline date</label>\r\n                    <input type=\"text\" id=\"datepicker\" class=\"form-control\" ng-model=\"editCtrl.todo.deadline\"\r\n                           placeholder=\"todo deadline\" mydatepicker/>\r\n                </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"status\">Status</label>\r\n                        <div class=\"select\" id=\"status\">\r\n                            <select ng-model=\"editCtrl.statusId\" class=\"form-control\">\r\n                                <option ng-repeat=\"column in editCtrl.columns\" value=\"{{column.id}}\">{{column.name}}\r\n                                </option>\r\n                            </select>\r\n                        </div>\r\n                    </div>\r\n                <div class=\"checkbox\">\r\n                    <input type=\"checkbox\" id=\"isUrgent\" name=\"isUrgent\"\r\n                           ng-model=\"editCtrl.todo.isUrgent\"\r\n                           ng-checked=\"editCtrl.todo.isUrgent\"><label for=\"isUrgent\">Срочный </label>\r\n                </div>\r\n\r\n                <button type=\"submit\" class=\"btn btn-success\">Save todo</button>\r\n                <button ng-click=\"editCtrl.cancelEditing\" class=\"btn btn-primary toRight\">Cancel</button>\r\n            </form>\r\n        </div>\r\n\r\n    </div>\r\n</div>";
+module.exports = "<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-offset-4 col-sm-4\">\r\n            <form class=\"todo-form\" ng-submit=\"editCtrl.updateTodo($event)\">\r\n                {{}}\r\n                <div class=\"form-group\">\r\n                    <label for=\"title\">Title</label>\r\n                    <input type=\"text\" id=\"title\" class=\"form-control\" name=\"title\" ng-model=\"editCtrl.todo.title\"\r\n                           placeholder=\"todo title\">\r\n                </div>\r\n\r\n                <div class=\"form-group\">\r\n                    <label for=\"todoDescription\">Description</label>\r\n                    <textarea class=\"form-control\" id=\"todoDescription\" rows=\"3\" placeholder=\"Description\"\r\n                              ng-model=\"editCtrl.todo.description\"></textarea>\r\n                </div>\r\n                <div class=\"form-group\">\r\n                    <label for=\"datepicker\">Deadline date</label>\r\n                    <input type=\"text\" id=\"datepicker\" class=\"form-control\" ng-model=\"editCtrl.todo.deadline\"\r\n                           placeholder=\"todo deadline\" mydatepicker/>\r\n                </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"status\">Status</label>\r\n                        <div class=\"select\" id=\"status\">\r\n                            <select ng-model=\"editCtrl.statusId\" class=\"form-control\">\r\n                                <option ng-repeat=\"column in editCtrl.columns\" value=\"{{column.id}}\">{{column.name}}</option>\r\n                            </select>\r\n                        </div>\r\n                    </div>\r\n                <div class=\"checkbox\">\r\n                    <input type=\"checkbox\" id=\"isUrgent\" name=\"isUrgent\"\r\n                           ng-model=\"editCtrl.todo.isUrgent\"\r\n                           ng-checked=\"editCtrl.todo.isUrgent\"><label for=\"isUrgent\">Срочный </label>\r\n                </div>\r\n\r\n                <button type=\"submit\" class=\"btn btn-success\">Save todo</button>\r\n                <button ng-click=\"editCtrl.cancelEditing()\" class=\"btn btn-primary toRight\">Cancel</button>\r\n            </form>\r\n        </div>\r\n\r\n    </div>\r\n</div>";
 
 /***/ },
 /* 39 */
 /***/ function(module, exports) {
 
-module.exports = "<div class=\"container-fluid\">\r\n    <div class=\"row filtersRow\">\r\n        <div class=\"col-sm-3\">\r\n            <todo-filters></todo-filters>\r\n        </div>\r\n    </div>\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-6 col-md-3\" ng-repeat=\"column in columns  track by $index\">\r\n            <div class=\"column\">\r\n                <todo-column></todo-column>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>";
+module.exports = "<div class=\"container-fluid\">\r\n    <div class=\"row filtersRow\">\r\n            <todo-filters></todo-filters>\r\n    </div>\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-6 col-md-3\" ng-repeat=\"column in columns  track by $index\">\r\n            <div class=\"column\">\r\n                <todo-column></todo-column>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>";
 
 /***/ },
 /* 40 */
@@ -53499,7 +53509,7 @@ module.exports = "<h2 class='columnTitle'>{{column.name}}</h2><ul><li class='tod
 /* 42 */
 /***/ function(module, exports) {
 
-module.exports = "<h2>Filter by:</h2>\r\n<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-3\">\r\n            <div class=\"select\">\r\n                <select ng-model=\"selectedParam\" class=\"form-control\"\r\n                        ng-change=\"setOrderParam(selectedParam)\">\r\n                    <option ng-repeat=\"filterParam in filterParams\" value=\"{{filterParam.value}}\">{{filterParam.name}}</option>\r\n                </select>\r\n            </div>\r\n        </div>\r\n        <div class=\"col-sm-3\">\r\n            <div class=\"checkbox\">\r\n                <input type=\"checkbox\" id=\"onlyUrgent\" class=\"oneTodocheckbox\" ng-click=\"showOnlyUrgent()\" ng-checked=\"isUrgent\">\r\n                <label for=\"onlyUrgent\" class=\"oneTodoLabel\">Only Urgent</label>\r\n            </div>\r\n        </div>\r\n        <div class=\"col-sm-3\">\r\n            <div class=\"form-group\">\r\n                <input type=\"text\" ng-change=\"filterByValue()\" class=\"form-control\" id=\"search\" name=\"search\" ng-model=\"searchValue\"\r\n                       placeholder=\"Search\">\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n";
+module.exports = "<div class=\"col-sm-12\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-12\"><h2>Filter by:</h2></div>\r\n    </div>\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-3\">\r\n            <div class=\"select\">\r\n                <select ng-model=\"selectedParam\" class=\"form-control\"\r\n                        ng-change=\"setOrderParam(selectedParam)\">\r\n                    <option ng-repeat=\"filterParam in filterParams\" value=\"{{filterParam.value}}\">{{filterParam.name}}\r\n                    </option>\r\n                </select>\r\n            </div>\r\n        </div>\r\n        <div class=\"col-sm-3\">\r\n            <div class=\"checkbox\">\r\n                <input type=\"checkbox\" id=\"onlyUrgent\" class=\"oneTodocheckbox\" ng-click=\"showOnlyUrgent()\"\r\n                       ng-checked=\"isUrgent\">\r\n                <label for=\"onlyUrgent\" class=\"oneTodoLabel\">Only Urgent</label>\r\n            </div>\r\n        </div>\r\n        <div class=\"col-sm-3\">\r\n            <div class=\"form-group\">\r\n                <input type=\"text\" ng-change=\"filterByValue()\" class=\"form-control\" id=\"search\" name=\"search\"\r\n                       ng-model=\"searchValue\"\r\n                       placeholder=\"Search\">\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n";
 
 /***/ },
 /* 43 */
