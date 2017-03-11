@@ -100,6 +100,7 @@ app.post('/updatetodo', function (req, res) {
                     todoToUpdate.status = currentTodo.status || todoToUpdate.status;
                     todoToUpdate.statusId = currentTodo.statusId;
                     todoToUpdate.deadline = currentTodo.deadline;
+                    todoToUpdate.deadlineTimestamp = currentTodo.deadlineTimestamp;
 
                     // Save the updated document back to the database
                     // console.log('todoToUpdate.statusId = '+todoToUpdate.statusId);

@@ -1,41 +1,41 @@
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
 /******/ 		if(installedModules[moduleId])
 /******/ 			return installedModules[moduleId].exports;
-
+/******/
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
 /******/ 	// identity function for calling harmory imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-
+/******/
 /******/ 	// define getter function for harmory exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		Object.defineProperty(exports, name, {
@@ -44,7 +44,7 @@
 /******/ 			get: getter
 /******/ 		});
 /******/ 	};
-
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -53,13 +53,13 @@
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-
+/******/
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 44);
 /******/ })
@@ -98,7 +98,7 @@ module.exports = app;
 /* 1 */
 /***/ function(module, exports) {
 
-module.exports = "<div class=\"container\">\r\n    <div class=\"row filtersRow\">\r\n        <div class=\"col-sm-offset-4 col-sm-4 \">\r\n            <todo-filters></todo-filters>\r\n        </div>\r\n    </div>\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-offset-4 col-sm-4\">\r\n            <div class=\"columnWrapper\">\r\n                <todo-column></todo-column>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n</div>";
+module.exports = "<todo-filters></todo-filters>\r\n\r\n<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-offset-4 col-sm-4\">\r\n            <div class=\"columnWrapper\">\r\n                <todo-column></todo-column>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n</div>";
 
 /***/ },
 /* 2 */
@@ -122,7 +122,7 @@ app.controller('AddTodoController',['$state','$rootScope','todoService',function
         this.todo.photo='https://2.gravatar.com/avatar/50d10a8864accf0b2522c326381a4702?d=https%3A%2F%2Fidenticons.github.com%2F02e74f10e0327ad868d138f2b4fdd6f0.png&r=x';
         this.todo.id = Date.now();
         const parts = this.todo.deadline.split('-');
-        const timestamp = new Date(parts[2],parts[0]-1,parts[1]).getTime();
+        const timestamp = new Date(parts[2],parts[1]-1,parts[0]).getTime();
         this.todo.deadlineTimestamp = timestamp;
         todoService.addTodo(this.todo);
         this.todo = {};
@@ -202,7 +202,7 @@ app.controller('ColumnController', ['$stateParams', '$scope','todoService', 'col
     }
 
     $scope.filterParams = todoService.filterParams();
-    $scope.selectedParam = $scope.filterParams[0];
+    $scope.selectedParam = $scope.filterParams[0].value;
     $scope.todoLists = [];
 
     todoService.getAllTodos((data) => {
@@ -300,6 +300,9 @@ app.controller('EditTodoController', ['$stateParams', '$state', '$rootScope', 't
         this.updateTodo = function ($event) {
             this.todo.statusId = Number(this.statusId);
             this.todo.status = this.columns[Number(this.statusId)].name;
+            const parts = this.todo.deadline.split('-');
+            const timestamp = new Date(parts[2],parts[1]-1,parts[0]).getTime();
+            this.todo.deadlineTimestamp = timestamp;
             todoService.updateTodo(this.todo);
 
             if($rootScope.previousState.name){
@@ -5485,6 +5488,7 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
     let isDownloading = false;
     // const filterParams = ['deadline','title','-isUrgent'];
     const filterParams = [
+        {'name':'-------Choose Filter------','value':''},
         {'name':'Deadline','value':'deadlineTimestamp'},
         {'name':'Name','value':'title'},
         {'name':'Urgent','value':'-isUrgent'},
@@ -53515,7 +53519,7 @@ module.exports = "<div class=\"col-sm-12\">\r\n    <div class=\"row\">\r\n      
 /* 43 */
 /***/ function(module, exports) {
 
-module.exports = "<section class=\"todoWrapper\" ng-class=\"{urgent:todo.isUrgent}\" ng-show=\"todoCtrl.showTodo(todo)\">\r\n\r\n    <uib-accordion close-others=\"oneAtATime\">\r\n        <div uib-accordion-group class=\"panel-default\"\r\n             is-open=\"status.isFirstOpen\">\r\n            <div uib-accordion-heading>\r\n                <div class=\"row\">\r\n                    <div class=\"col-xs-2 interact-icons\">\r\n                        <a ui-sref=\"edittodo({id:todo.id})\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a>\r\n                    </div>\r\n                    <div class=\"col-xs-8\">\r\n                        <div class=\"mainWrapper\">\r\n                            <div class=\"title\">{{todo.title}}</div>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"col-xs-2 interact-icons delete\">\r\n                        <i class=\"fa fa-times\" aria-hidden=\"true\" ng-click=\"todoCtrl.deleteTodo(todo)\"></i>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                    <h2>Deadline</h2>\r\n                    <p class=\"deadlineTodo\">{{todo.deadline}}</p></div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-6\">\r\n                    <div class=\"checkbox\">\r\n                        <input type=\"checkbox\" class=\"oneTodocheckbox\" ng-click=\"todoCtrl.makeUrgent($event,todo)\"\r\n                               ng-checked='todo.isUrgent'>\r\n                        <span class=\"oneTodoLabel\">Urgent </span>\r\n                    </div>\r\n                </div>\r\n                <div class=\"col-sm-6\">\r\n                    <div class=\"select\">\r\n                        <select ng-model=\"todoCtrl.column\" class=\"form-control\"\r\n                                ng-change=\"todoCtrl.selectChanged(todoCtrl.column,todo)\">\r\n                            <option ng-repeat=\"column in columns\" value=\"{{column.id}}\">{{column.name}}</option>\r\n                        </select>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                    <h2>Descriptrion:</h2>\r\n                    <p>{{todo.description}}</p>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </uib-accordion>\r\n\r\n\r\n</section>";
+module.exports = "<section class=\"todoWrapper\" ng-class=\"{urgent:todo.isUrgent}\" ng-show=\"todoCtrl.showTodo(todo)\">\r\n\r\n    <uib-accordion close-others=\"oneAtATime\">\r\n        <div uib-accordion-group class=\"panel-default\"\r\n             is-open=\"status.isFirstOpen\">\r\n            <div uib-accordion-heading>\r\n                <div class=\"row\">\r\n                    <div class=\"col-xs-2 interact-icons\">\r\n                        <a ui-sref=\"edittodo({id:todo.id})\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a>\r\n                    </div>\r\n                    <div class=\"col-xs-8\">\r\n                        <div class=\"mainWrapper\">\r\n                            <div class=\"title\">{{todo.title}}</div>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"col-xs-2 interact-icons delete\">\r\n                        <i class=\"fa fa-times\" aria-hidden=\"true\" ng-click=\"todoCtrl.deleteTodo(todo)\"></i>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                    <h2>Deadline</h2>\r\n                    <p class=\"deadlineTodo\">{{todo.deadline}}</p>\r\n                    <p class=\"deadlineTodo\">timeStamp - {{todo.deadlineTimestamp}}</p>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-6\">\r\n                    <div class=\"checkbox\">\r\n                        <input type=\"checkbox\" class=\"oneTodocheckbox\" ng-click=\"todoCtrl.makeUrgent($event,todo)\"\r\n                               ng-checked='todo.isUrgent'>\r\n                        <span class=\"oneTodoLabel\">Urgent </span>\r\n                    </div>\r\n                </div>\r\n                <div class=\"col-sm-6\">\r\n                    <div class=\"select\">\r\n                        <select ng-model=\"todoCtrl.column\" class=\"form-control\"\r\n                                ng-change=\"todoCtrl.selectChanged(todoCtrl.column,todo)\">\r\n                            <option ng-repeat=\"column in columns\" value=\"{{column.id}}\">{{column.name}}</option>\r\n                        </select>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                    <h2>Descriptrion:</h2>\r\n                    <p>{{todo.description}}</p>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </uib-accordion>\r\n\r\n\r\n</section>";
 
 /***/ },
 /* 44 */

@@ -8,7 +8,7 @@ app.controller('ColumnController', ['$stateParams', '$scope','todoService', 'col
     }
 
     $scope.filterParams = todoService.filterParams();
-    $scope.selectedParam = $scope.filterParams[0];
+    $scope.selectedParam = $scope.filterParams[0].value;
     $scope.todoLists = [];
 
     todoService.getAllTodos((data) => {

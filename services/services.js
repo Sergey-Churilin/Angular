@@ -9,6 +9,7 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
     let isDownloading = false;
     // const filterParams = ['deadline','title','-isUrgent'];
     const filterParams = [
+        {'name':'-------Choose Filter------','value':''},
         {'name':'Deadline','value':'deadlineTimestamp'},
         {'name':'Name','value':'title'},
         {'name':'Urgent','value':'-isUrgent'},
