@@ -1,19 +1,19 @@
 var app = require('../app.js');
 
-app.factory('todoService', ['$http','authService', function ($http,authService) {
+app.factory('todoService', ['$http', 'authService', function ($http, authService) {
     let todoServiceData = [];//JSON.parse(localStorage.getItem('allTodos'));
-    if(!todoServiceData){
+    if (!todoServiceData) {
         todoServiceData = [];
     }
     let isDataDownloadedFromServer = false;
     let isDownloading = false;
     // const filterParams = ['deadline','title','-isUrgent'];
     const filterParams = [
-        {'name':'-------Choose Filter------','value':''},
-        {'name':'Deadline','value':'deadlineTimestamp'},
-        {'name':'Name','value':'title'},
-        {'name':'Urgent','value':'-isUrgent'},
-        ];
+        {'name': '-------Choose Filter------', 'value': ''},
+        {'name': 'Deadline', 'value': 'deadlineTimestamp'},
+        {'name': 'Name', 'value': 'title'},
+        {'name': 'Urgent', 'value': '-isUrgent'},
+    ];
     const todoService = {};
     //get data
     todoService.getDataFromServer = function (callback) {
@@ -22,9 +22,9 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
             method: 'post',
             url: '/getdata',
             data: data
-        }) .then((obj) => {
+        }).then((obj) => {
             todoServiceData = todoServiceData.concat(obj.data);
-            localStorage.setItem('allTodos',JSON.stringify(todoServiceData));
+            localStorage.setItem('allTodos', JSON.stringify(todoServiceData));
             isDataDownloadedFromServer = true;
             isDownloading = false;
             return callback(todoServiceData);
@@ -37,9 +37,9 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
 
     //add data
     todoService.addTodo = function (todo) {
-        var newTodo = {'todo':todo,'user':authService.getUser()};
+        var newTodo = {'todo': todo, 'user': authService.getUser()};
         todoServiceData.push(todo);
-        localStorage.setItem('allTodos',JSON.stringify(todoServiceData));
+        localStorage.setItem('allTodos', JSON.stringify(todoServiceData));
         $http({
             method: 'post',
             url: '/addtodo',
@@ -57,7 +57,7 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
 
     //update data
     todoService.updateTodo = function (todoToUpdate) {
-        var data = {'todo':todoToUpdate,'user':authService.getUser()};
+        var data = {'todo': todoToUpdate, 'user': authService.getUser()};
         $http({
             method: 'post',
             url: '/updatetodo',
@@ -74,43 +74,42 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
     todoService.deleteTodo = function (todo) {
 
 
-
         const findedTodoIndex = todoServiceData.findIndex((neededTodo, index) => {
             if (neededTodo.id === todo.id) {
                 return true;
             }
         });
 
-        var data = {'todo':todo,'user':authService.getUser()};
+        var data = {'todo': todo, 'user': authService.getUser()};
         $http({
             method: 'post',
             url: '/deletedata',
             data: data
-        })            .then((obj) => {
+        }).then((obj) => {
             console.log(obj);
-        },(error)=>{
+        }, (error) => {
             console.log(error);
         });
 
 
         todoServiceData.splice(findedTodoIndex, 1);
-        localStorage.setItem('allTodos',JSON.stringify(todoServiceData));
-     /*   $http.delete("/deletedata/"+todo.id)
-            .then((obj) => {
-                console.log(obj);
-            },(error)=>{
-                console.log(error);
-            });*/
+        localStorage.setItem('allTodos', JSON.stringify(todoServiceData));
+        /*   $http.delete("/deletedata/"+todo.id)
+         .then((obj) => {
+         console.log(obj);
+         },(error)=>{
+         console.log(error);
+         });*/
 
 
     };
 
-    todoService.getAllTodos = function(callback){
+    todoService.getAllTodos = function (callback) {
 
         if (callback && !isDownloading) {
-/*            if(todoServiceData.length > 0){
-                return callback(todoServiceData);
-            }*/
+            /*            if(todoServiceData.length > 0){
+             return callback(todoServiceData);
+             }*/
 
             isDownloading = true;
             if (!isDataDownloadedFromServer) {
@@ -124,38 +123,55 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
     };
 
     todoService.getFilteredTodos = function (column) {
-            return todoServiceData.filter((todo) => {
-                return todo.statusId === column.id;
-            });
+        return todoServiceData.filter((todo) => {
+            return todo.statusId === column.id;
+        });
 
     };
 
     todoService.getTodo = function (id) {
         return todoServiceData.find((neededTodo) => {
-            if(neededTodo.id === Number(id)){
-                console.log("neededTodo.id = " + neededTodo.id)
-                console.log("Number(id) = " + Number(id))
+            if (neededTodo.id === Number(id)) {
                 return neededTodo;
-
             }
-           });
+        });
     };
 
     todoService.makeUrgent = function (todo) {
         const findedTodo = todoServiceData.find((neededTodo) => neededTodo.id === todo.id);
         findedTodo.isUrgent = !findedTodo.isUrgent;
-        localStorage.setItem('allTodos',JSON.stringify(todoServiceData));
+        localStorage.setItem('allTodos', JSON.stringify(todoServiceData));
         this.updateTodo(findedTodo);
     };
 
-
-    todoService.updateData = function (column, todo, status) {
-        const findedTodo = todoServiceData.find((neededTodo) => neededTodo.id === todo.id);
+    todoService.updateData = function (column, todo,callback) {
+        const neededId = todo.id || Number(todo);
+        const findedTodo = todoServiceData.find(
+            (neededTodo) => neededTodo.id === neededId);
         if (findedTodo) {
-            findedTodo.statusId = Number(column);
-            findedTodo.status = status;
-            localStorage.setItem('allTodos',JSON.stringify(todoServiceData));
+            let newStatus = column.id;
+            if(typeof newStatus !=='number'){
+                newStatus = Number(column);
+            }
+            if(findedTodo.statusId === newStatus){
+                if(callback){
+                    callback(false);
+                }
+                return;
+            }
+            findedTodo.statusId = newStatus;
+            if(status){
+                findedTodo.status = status;
+            }
+            findedTodo.status = column.name;
+            if(column.name){
+                findedTodo.status = column.name;
+            }
+            localStorage.setItem('allTodos', JSON.stringify(todoServiceData));
             this.updateTodo(findedTodo);
+            if(callback){
+                callback(true);
+            }
         }
     };
 
@@ -163,20 +179,20 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
         return filterParams;
     };
 
-    todoService.filterTodoBySearch = function (todo,searchValue) {
+    todoService.filterTodoBySearch = function (todo, searchValue) {
         let containsSearchVal = false;
         const neededString = searchValue.toLocaleLowerCase();
-        if(todo.title){
+        if (todo.title) {
             const neededTitle = todo.title.toLocaleLowerCase();
-            if(neededTitle.indexOf(searchValue) >=0){
+            if (neededTitle.indexOf(searchValue) >= 0) {
                 containsSearchVal = true;
             }
         }
 
-        if(!containsSearchVal){
-            if(todo.description){
+        if (!containsSearchVal) {
+            if (todo.description) {
                 const neededDesc = todo.description.toLocaleLowerCase();
-                if(neededDesc.indexOf(searchValue) >=0){
+                if (neededDesc.indexOf(searchValue) >= 0) {
                     containsSearchVal = true;
                 }
             }
@@ -211,14 +227,14 @@ app.factory('columnsService', function () {
     return columnsService;
 });
 
-app.factory('authService', ['$http','$state',function ($http,$state) {
+app.factory('authService', ['$http', '$state', function ($http, $state) {
     const authService = {};
     // = false;
     let user = JSON.parse(localStorage.getItem('user'));
     let isLogged;
-    authService.createNewUser = function (authData,callback) {
-        if(authData.remember){
-            localStorage.setItem('user',JSON.stringify(authData));
+    authService.createNewUser = function (authData, callback) {
+        if (authData.remember) {
+            localStorage.setItem('user', JSON.stringify(authData));
         }
         $http({
             method: 'post',
@@ -232,16 +248,16 @@ app.factory('authService', ['$http','$state',function ($http,$state) {
             //TODO add user to local storage and check for data
 
         }, function errorCallback(response) {
-            if(response.status=== 403){
+            if (response.status === 403) {
                 callback(response);
             }
             console.log('error')
         });
     };
 
-    authService.loginUser = function (authData,callback) {
-        if(authData.remember){
-            localStorage.setItem('user',JSON.stringify(authData));
+    authService.loginUser = function (authData, callback) {
+        if (authData.remember) {
+            localStorage.setItem('user', JSON.stringify(authData));
         }
         $http({
             method: 'post',
@@ -261,7 +277,7 @@ app.factory('authService', ['$http','$state',function ($http,$state) {
     };
 
     authService.getUser = function () {
-        if(Object.keys(user).length === 0){
+        if (Object.keys(user).length === 0) {
             user = JSON.parse(localStorage.getItem('user'));
         }
         return user;

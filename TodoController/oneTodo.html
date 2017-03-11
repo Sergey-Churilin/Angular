@@ -1,4 +1,4 @@
-<section class="todoWrapper" ng-class="{urgent:todo.isUrgent}" ng-show="todoCtrl.showTodo(todo)">
+<section class="todoWrapper" data-id="{{todo.id}}" data-drag="true" jqyoui-draggable="{animate:true,}" data-jqyoui-options="{revert: 'invalid'}" ng-class="{urgent:todo.isUrgent}" ng-show="todoCtrl.showTodo(todo)">
 
     <uib-accordion close-others="oneAtATime">
         <div uib-accordion-group class="panel-default"
@@ -22,7 +22,6 @@
                 <div class="col-sm-12">
                     <h2>Deadline</h2>
                     <p class="deadlineTodo">{{todo.deadline}}</p>
-                    <p class="deadlineTodo">timeStamp - {{todo.deadlineTimestamp}}</p>
                 </div>
             </div>
             <div class="row">

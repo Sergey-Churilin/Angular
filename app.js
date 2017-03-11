@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ui.router','angular-md5','ui.bootstrap','ngAnimate']);
+var app = angular.module('app', ['ui.router','angular-md5','ui.bootstrap','ngAnimate','ngDragDrop']);
 
 
 app.run(['$rootScope', '$state','authService', function ($rootScope, $state,authService) {

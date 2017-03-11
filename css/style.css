@@ -29,6 +29,9 @@ body{
     /*margin-bottom: 20px;*/
     padding: 10px;
 }
+.transition{
+    transition: all .3s;
+}
 .todoWrapper.urgent{
     background: rgba(205, 97, 108, 0.55);
 }

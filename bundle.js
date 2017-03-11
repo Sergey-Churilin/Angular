@@ -61,14 +61,14 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 44);
+/******/ 	return __webpack_require__(__webpack_require__.s = 45);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ function(module, exports) {
 
-var app = angular.module('app', ['ui.router','angular-md5','ui.bootstrap','ngAnimate']);
+var app = angular.module('app', ['ui.router','angular-md5','ui.bootstrap','ngAnimate','ngDragDrop']);
 
 
 app.run(['$rootScope', '$state','authService', function ($rootScope, $state,authService) {
@@ -98,7 +98,7 @@ module.exports = app;
 /* 1 */
 /***/ function(module, exports) {
 
-module.exports = "<todo-filters></todo-filters>\r\n\r\n<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-offset-4 col-sm-4\">\r\n            <div class=\"columnWrapper\">\r\n                <todo-column></todo-column>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n</div>";
+module.exports = "<todo-filters></todo-filters>\r\n\r\n<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-offset-4 col-sm-4\">\r\n            <div class=\"column\">\r\n                <todo-column></todo-column>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n</div>";
 
 /***/ },
 /* 2 */
@@ -194,7 +194,7 @@ app.directive('authForm', function () {
 
 var app = __webpack_require__(0);
 
-app.controller('ColumnController', ['$stateParams', '$scope','todoService', 'columnsService', function ($stateParams,$scope,todoService, columnsService) {
+app.controller('ColumnController', ['$stateParams','$state', '$scope','todoService', 'columnsService', function ($stateParams,$state,$scope,todoService, columnsService) {
     $scope.columns = columnsService.getColumns();
     $scope.isUrgent = false;
     if($stateParams){
@@ -229,7 +229,25 @@ app.controller('ColumnController', ['$stateParams', '$scope','todoService', 'col
 
     $scope.filterByValue = function () {
         $scope.$broadcast('searchByValue',{'searchValue':$scope.searchValue});
-    }
+    };
+
+    $scope.dropCallback = (event, ui,column) =>{
+        const curUi = ui;
+        todoService.updateData(column,ui.draggable[0].dataset.id,(shouldReload) =>{
+            if(shouldReload){
+                curUi.helper[0].style.left = 0;
+                curUi.helper[0].style.top = 0;
+                // $state.reload();
+            } else {
+                curUi.helper[0].classList.add('transition');
+                curUi.helper[0].style.left = 0;
+                curUi.helper[0].style.top = 0;
+                setTimeout(function () {
+                    curUi.helper[0].classList.remove('transition');
+                },500);
+            }
+        });
+    };
 
 }]);
 
@@ -259,7 +277,7 @@ var app = __webpack_require__(0);
 
 app.directive('todoColumn', function () {
     return {
-        template:__webpack_require__(41)
+        template:__webpack_require__(42)
     };
 });
 
@@ -272,7 +290,7 @@ var app = __webpack_require__(0);
 
 app.directive('todoFilters', function () {
     return {
-        template:__webpack_require__(42)
+        template:__webpack_require__(43)
     };
 });
 
@@ -367,7 +385,7 @@ app.directive('appNavigation', function () {
     return {
         controller: 'NavController',
         controllerAs: "navCtrl",
-        template: __webpack_require__(40)
+        template: __webpack_require__(41)
     }
 });
 
@@ -385,7 +403,7 @@ app.controller('TodoController', ['$location', '$scope','todoService', function 
         todoService.deleteTodo(todo);
     };
     this.selectChanged = (column,todo) => {
-        todoService.updateData(column,todo,$scope.columns[Number(column)].name);
+        todoService.updateData($scope.columns[Number(column)],todo);
     };
 
     this.makeUrgent = ($event, todo) => {
@@ -413,14 +431,13 @@ app.controller('TodoController', ['$location', '$scope','todoService', function 
 
         return show;
     };
-
 }]);
 
 app.directive('oneTodo', function () {
     return {
         controller: 'TodoController',
         controllerAs: "todoCtrl",
-        template: __webpack_require__(43),
+        template: __webpack_require__(44),
         replace:true,
         scope:{
             'todo':'=',
@@ -441,7 +458,7 @@ const config =  app.config(['$stateProvider', '$urlRouterProvider', function ($s
         .state('all', {
             url: '/all',
             controller:'ColumnController',
-            template:__webpack_require__(39)
+            template:__webpack_require__(40)
         })
         .state('todo', {
             url: '/todo',
@@ -479,19 +496,19 @@ const config =  app.config(['$stateProvider', '$urlRouterProvider', function ($s
             url: '/edittodo/:id',
             controller:'EditTodoController',
             controllerAs:'editCtrl',
-            template:__webpack_require__(38),
+            template:__webpack_require__(39),
         })
         .state('addtodo', {
             url: '/addtodo',
             controller:'AddTodoController',
             controllerAs:'addTodoCtrl',
-            template:__webpack_require__(36),
+            template:__webpack_require__(37),
         })
         .state('auth', {
             url: '/auth',
             controller:'AuthController',
             controllerAs:'authCtrl',
-            template:__webpack_require__(37),
+            template:__webpack_require__(38),
             // templateUrl: "Authorization/auth-template.html",
         })
 }]);
@@ -499,6 +516,431 @@ const config =  app.config(['$stateProvider', '$urlRouterProvider', function ($s
 
 /***/ },
 /* 13 */
+/***/ function(module, exports) {
+
+/**
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ */
+
+/**
+ * Implementing Drag and Drop functionality in AngularJS is easier than ever.
+ * Demo: http://codef0rmer.github.com/angular-dragdrop/
+ *
+ * @version 1.0.13
+ *
+ * (c) 2013 Amit Gharat a.k.a codef0rmer <amit.2006.it@gmail.com> - amitgharat.wordpress.com
+ */
+
+(function (window, angular, $, undefined) {
+'use strict';
+
+var jqyoui = angular.module('ngDragDrop', []).service('ngDragDropService', ['$timeout', '$parse', '$q', function($timeout, $parse, $q) {
+    this.draggableScope = null;
+    this.droppableScope = null;
+
+    $('head').prepend('<style type="text/css">@charset "UTF-8";.angular-dragdrop-hide{display: none !important;}</style>');
+
+    this.callEventCallback = function (scope, callbackName, event, ui) {
+      if (!callbackName) return;
+
+      var objExtract = extract(callbackName),
+          callback = objExtract.callback,
+          constructor = objExtract.constructor,
+          args = [event, ui].concat(objExtract.args);
+      
+      // call either $scoped method i.e. $scope.dropCallback or constructor's method i.e. this.dropCallback.
+      // Removing scope.$apply call that was performance intensive (especially onDrag) and does not require it
+      // always. So call it within the callback if needed.
+      return (scope[callback] || scope[constructor][callback]).apply(scope[callback] ? scope : scope[constructor], args);
+      
+      function extract(callbackName) {
+        var atStartBracket = callbackName.indexOf('(') !== -1 ? callbackName.indexOf('(') : callbackName.length,
+            atEndBracket = callbackName.lastIndexOf(')') !== -1 ? callbackName.lastIndexOf(')') : callbackName.length,
+            args = callbackName.substring(atStartBracket + 1, atEndBracket), // matching function arguments inside brackets
+            constructor = callbackName.indexOf('.') !== -1 ? callbackName.substr(0, callbackName.indexOf('.')) : null; // matching a string upto a dot to check ctrl as syntax
+            constructor = scope[constructor] && typeof scope[constructor].constructor === 'function' ? constructor : null;
+
+        return {
+          callback: callbackName.substring(constructor && constructor.length + 1 || 0, atStartBracket),
+          args: $.map(args && args.split(',') || [], function(item) { return [$parse(item)(scope)]; }),
+          constructor: constructor
+        }
+      }
+    };
+
+    this.invokeDrop = function ($draggable, $droppable, event, ui) {
+      var dragModel = '',
+        dropModel = '',
+        dragSettings = {},
+        dropSettings = {},
+        jqyoui_pos = null,
+        dragItem = {},
+        dropItem = {},
+        dragModelValue,
+        dropModelValue,
+        $droppableDraggable = null,
+        droppableScope = this.droppableScope,
+        draggableScope = this.draggableScope,
+        $helper = null,
+        promises = [],
+        temp;
+
+      dragModel = $draggable.ngattr('ng-model');
+      dropModel = $droppable.ngattr('ng-model');
+      dragModelValue = draggableScope.$eval(dragModel);
+      dropModelValue = droppableScope.$eval(dropModel);
+
+      $droppableDraggable = $droppable.find('[jqyoui-draggable]:last,[data-jqyoui-draggable]:last');
+      dropSettings = droppableScope.$eval($droppable.attr('jqyoui-droppable') || $droppable.attr('data-jqyoui-droppable')) || [];
+      dragSettings = draggableScope.$eval($draggable.attr('jqyoui-draggable') || $draggable.attr('data-jqyoui-draggable')) || [];
+
+      // Helps pick up the right item
+      dragSettings.index = this.fixIndex(draggableScope, dragSettings, dragModelValue);
+      dropSettings.index = this.fixIndex(droppableScope, dropSettings, dropModelValue);
+
+      jqyoui_pos = angular.isArray(dragModelValue) ? dragSettings.index : null;
+      dragItem = angular.isArray(dragModelValue) ? dragModelValue[jqyoui_pos] : dragModelValue;
+
+      if (dragSettings.deepCopy) {
+        dragItem = angular.copy(dragItem);
+      }
+
+      if (angular.isArray(dropModelValue) && dropSettings && dropSettings.index !== undefined) {
+        dropItem = dropModelValue[dropSettings.index];
+      } else if (!angular.isArray(dropModelValue)) {
+        dropItem = dropModelValue;
+      } else {
+        dropItem = {};
+      }
+
+      if (dropSettings.deepCopy) {
+        dropItem = angular.copy(dropItem);
+      }
+
+      if (dragSettings.beforeDrop) {
+        promises.push(this.callEventCallback(draggableScope, dragSettings.beforeDrop, event, ui));
+      }
+
+      $q.all(promises).then(angular.bind(this, function() {
+        if (dragSettings.insertInline && dragModel === dropModel) {
+          if (dragSettings.index > dropSettings.index) {
+            temp = dragModelValue[dragSettings.index];
+            for (var i = dragSettings.index; i > dropSettings.index; i--) {
+              dropModelValue[i] = angular.copy(dropModelValue[i - 1]);
+              dropModelValue[i - 1] = {};
+              dropModelValue[i][dragSettings.direction] = 'left';
+            }
+            dropModelValue[dropSettings.index] = temp;
+          } else {
+            temp = dragModelValue[dragSettings.index];
+            for (var i = dragSettings.index; i < dropSettings.index; i++) {
+              dropModelValue[i] = angular.copy(dropModelValue[i + 1]);
+              dropModelValue[i + 1] = {};
+              dropModelValue[i][dragSettings.direction] = 'right';
+            }
+            dropModelValue[dropSettings.index] = temp;
+          }
+          this.callEventCallback(droppableScope, dropSettings.onDrop, event, ui);
+        } else if (dragSettings.animate === true) {
+          // be nice with absolutely positioned brethren :-)
+          $helper = $draggable.clone();
+          $helper.css({'position': 'absolute'}).css($draggable.offset());
+          $('body').append($helper);
+          $draggable.addClass('angular-dragdrop-hide');
+
+          this.move($helper, $droppableDraggable.length > 0 ? $droppableDraggable : $droppable, null, 'fast', dropSettings, function() { $helper.remove(); });
+          this.move($droppableDraggable.length > 0 && !dropSettings.multiple ? $droppableDraggable : [], $draggable.parent('[jqyoui-droppable],[data-jqyoui-droppable]'), jqyoui.startXY, 'fast', dropSettings, angular.bind(this, function() {
+            $timeout(angular.bind(this, function() {
+              // Do not move this into move() to avoid flickering issue
+              $draggable.css({'position': 'relative', 'left': '', 'top': ''}).removeClass('angular-dragdrop-hide');
+              // Angular v1.2 uses ng-hide to hide an element not display property
+              // so we've to manually remove display:none set in this.move()
+              $droppableDraggable.css({'position': 'relative', 'left': '', 'top': '', 'display': $droppableDraggable.css('display') === 'none' ? '' : $droppableDraggable.css('display')});
+
+              this.mutateDraggable(draggableScope, dropSettings, dragSettings, dragModel, dropModel, dropItem, $draggable);
+              this.mutateDroppable(droppableScope, dropSettings, dragSettings, dropModel, dragItem, jqyoui_pos);
+              this.callEventCallback(droppableScope, dropSettings.onDrop, event, ui);
+            }));
+          }));
+        } else {
+          $timeout(angular.bind(this, function() {
+            this.mutateDraggable(draggableScope, dropSettings, dragSettings, dragModel, dropModel, dropItem, $draggable);
+            this.mutateDroppable(droppableScope, dropSettings, dragSettings, dropModel, dragItem, jqyoui_pos);
+            this.callEventCallback(droppableScope, dropSettings.onDrop, event, ui);
+          }));
+        }
+      })).finally(angular.bind(this, function() {
+        this.restore($draggable);
+      }));
+    };
+
+    this.move = function($fromEl, $toEl, toPos, duration, dropSettings, callback) {
+      if ($fromEl.length === 0) {
+        if (callback) {
+          window.setTimeout(function() {
+            callback();
+          }, 300);
+        }
+        return false;
+      }
+
+      var zIndex = $fromEl.css('z-index'),
+        fromPos = $fromEl[dropSettings.containment || 'offset'](),
+        displayProperty = $toEl.css('display'), // sometimes `display` is other than `block`
+        hadNgHideCls = $toEl.hasClass('ng-hide'),
+        hadDNDHideCls = $toEl.hasClass('angular-dragdrop-hide');
+
+      if (toPos === null && $toEl.length > 0) {
+        if (($toEl.attr('jqyoui-draggable') || $toEl.attr('data-jqyoui-draggable')) !== undefined && $toEl.ngattr('ng-model') !== undefined && $toEl.is(':visible') && dropSettings && dropSettings.multiple) {
+          toPos = $toEl[dropSettings.containment || 'offset']();
+          if (dropSettings.stack === false) {
+            toPos.left+= $toEl.outerWidth(true);
+          } else {
+            toPos.top+= $toEl.outerHeight(true);
+          }
+        } else {
+          // Angular v1.2 uses ng-hide to hide an element 
+          // so we've to remove it in order to grab its position
+          if (hadNgHideCls) $toEl.removeClass('ng-hide');
+          if (hadDNDHideCls) $toEl.removeClass('angular-dragdrop-hide');
+          toPos = $toEl.css({'visibility': 'hidden', 'display': 'block'})[dropSettings.containment || 'offset']();
+          $toEl.css({'visibility': '','display': displayProperty});
+        }
+      }
+
+      $fromEl.css({'position': 'absolute', 'z-index': 9999})
+        .css(fromPos)
+        .animate(toPos, duration, function() {
+          // Angular v1.2 uses ng-hide to hide an element
+          // and as we remove it above, we've to put it back to
+          // hide the element (while swapping) if it was hidden already
+          // because we remove the display:none in this.invokeDrop()
+          if (hadNgHideCls) $toEl.addClass('ng-hide');
+          if (hadDNDHideCls) $toEl.addClass('angular-dragdrop-hide');
+          $fromEl.css('z-index', zIndex);
+          if (callback) callback();
+        });
+    };
+
+    this.mutateDroppable = function(scope, dropSettings, dragSettings, dropModel, dragItem, jqyoui_pos) {
+      var dropModelValue = scope.$eval(dropModel);
+
+      scope.dndDragItem = dragItem;
+
+      if (angular.isArray(dropModelValue)) {
+        if (dropSettings && dropSettings.index >= 0) {
+          dropModelValue[dropSettings.index] = dragItem;
+        } else {
+          dropModelValue.push(dragItem);
+        }
+        if (dragSettings && dragSettings.placeholder === true) {
+          dropModelValue[dropModelValue.length - 1]['jqyoui_pos'] = jqyoui_pos;
+        }
+      } else {
+        $parse(dropModel + ' = dndDragItem')(scope);
+        if (dragSettings && dragSettings.placeholder === true) {
+          dropModelValue['jqyoui_pos'] = jqyoui_pos;
+        }
+      }
+    };
+
+    this.mutateDraggable = function(scope, dropSettings, dragSettings, dragModel, dropModel, dropItem, $draggable) {
+      var isEmpty = angular.equals(dropItem, {}) || !dropItem,
+        dragModelValue = scope.$eval(dragModel);
+
+      scope.dndDropItem = dropItem;
+
+      if (dragSettings && dragSettings.placeholder) {
+        if (dragSettings.placeholder != 'keep'){
+          if (angular.isArray(dragModelValue) && dragSettings.index !== undefined) {
+            dragModelValue[dragSettings.index] = dropItem;
+          } else {
+            $parse(dragModel + ' = dndDropItem')(scope);
+          }
+        }
+      } else {
+        if (angular.isArray(dragModelValue)) {
+          if (isEmpty) {
+            if (dragSettings && ( dragSettings.placeholder !== true && dragSettings.placeholder !== 'keep' )) {
+              dragModelValue.splice(dragSettings.index, 1);
+            }
+          } else {
+            dragModelValue[dragSettings.index] = dropItem;
+          }
+        } else {
+          // Fix: LIST(object) to LIST(array) - model does not get updated using just scope[dragModel] = {...}
+          // P.S.: Could not figure out why it happened
+          $parse(dragModel + ' = dndDropItem')(scope);
+          if (scope.$parent) {
+            $parse(dragModel + ' = dndDropItem')(scope.$parent);
+          }
+        }
+      }
+
+      this.restore($draggable);
+    };
+
+    this.restore = function($draggable) {
+      $draggable.css({'z-index': '', 'left': '', 'top': ''});
+    };
+
+    this.fixIndex = function(scope, settings, modelValue) {
+      if (settings.applyFilter && angular.isArray(modelValue) && modelValue.length > 0) {
+        var dragModelValueFiltered = scope[settings.applyFilter](),
+            lookup = dragModelValueFiltered[settings.index],
+            actualIndex = undefined;
+
+        modelValue.forEach(function(item, i) {
+           if (angular.equals(item, lookup)) {
+             actualIndex = i;
+           }
+        });
+
+        return actualIndex;
+      }
+
+      return settings.index;
+    };
+  }]).directive('jqyouiDraggable', ['ngDragDropService', function(ngDragDropService) {
+    return {
+      require: '?jqyouiDroppable',
+      restrict: 'A',
+      link: function(scope, elem, attrs) {
+        var element = $(elem);
+        var dragSettings, jqyouiOptions, zIndex, killWatcher;
+        var updateDraggable = function(newValue, oldValue) {
+          if (newValue) {
+            dragSettings = scope.$eval(element.attr('jqyoui-draggable') || element.attr('data-jqyoui-draggable')) || {};
+            jqyouiOptions = scope.$eval(attrs.jqyouiOptions) || {};
+            element
+              .draggable({disabled: false})
+              .draggable(jqyouiOptions)
+              .draggable({
+                start: function(event, ui) {
+                  ngDragDropService.draggableScope = scope;
+                  zIndex = $(jqyouiOptions.helper ? ui.helper : this).css('z-index');
+                  $(jqyouiOptions.helper ? ui.helper : this).css('z-index', 9999);
+                  jqyoui.startXY = $(this)[dragSettings.containment || 'offset']();
+                  ngDragDropService.callEventCallback(scope, dragSettings.onStart, event, ui);
+                },
+                stop: function(event, ui) {
+                  $(jqyouiOptions.helper ? ui.helper : this).css('z-index', zIndex);
+                  ngDragDropService.callEventCallback(scope, dragSettings.onStop, event, ui);
+                },
+                drag: function(event, ui) {
+                  ngDragDropService.callEventCallback(scope, dragSettings.onDrag, event, ui);
+                }
+              });
+          } else {
+            element.draggable({disabled: true});
+          }
+
+          if (killWatcher && angular.isDefined(newValue) && (angular.equals(attrs.drag, 'true') || angular.equals(attrs.drag, 'false'))) {
+            killWatcher();
+            killWatcher = null;
+          }
+        };
+
+        killWatcher = scope.$watch(function() { return scope.$eval(attrs.drag); }, updateDraggable);
+        updateDraggable();
+
+        element.on('$destroy', function() {
+          element.draggable({disabled: true}).draggable('destroy');
+        });
+      }
+    };
+  }]).directive('jqyouiDroppable', ['ngDragDropService', '$q', function(ngDragDropService, $q) {
+    return {
+      restrict: 'A',
+      priority: 1,
+      link: function(scope, elem, attrs) {
+        var element = $(elem);
+        var dropSettings, jqyouiOptions, killWatcher;
+        var updateDroppable = function(newValue, oldValue) {
+          if (newValue) {
+            dropSettings = scope.$eval($(element).attr('jqyoui-droppable') || $(element).attr('data-jqyoui-droppable')) || {};
+            jqyouiOptions = scope.$eval(attrs.jqyouiOptions) || {};
+            element
+              .droppable({disabled: false})
+              .droppable(jqyouiOptions)
+              .droppable({
+                over: function(event, ui) {
+                  ngDragDropService.callEventCallback(scope, dropSettings.onOver, event, ui);
+                },
+                out: function(event, ui) {
+                  ngDragDropService.callEventCallback(scope, dropSettings.onOut, event, ui);
+                },
+                drop: function(event, ui) {
+                  var beforeDropPromise = null;
+
+                  if (dropSettings.beforeDrop) {
+                    beforeDropPromise = ngDragDropService.callEventCallback(scope, dropSettings.beforeDrop, event, ui);
+                  } else {
+                    beforeDropPromise = (function() {
+                      var deferred = $q.defer();
+                      deferred.resolve();
+                      return deferred.promise;
+                    })();
+                  }
+
+                  beforeDropPromise.then(angular.bind(this, function() {
+                    if ($(ui.draggable).ngattr('ng-model') && attrs.ngModel) {
+                      ngDragDropService.droppableScope = scope;
+                      ngDragDropService.invokeDrop($(ui.draggable), $(this), event, ui);
+                    } else {
+                      ngDragDropService.callEventCallback(scope, dropSettings.onDrop, event, ui);
+                    }
+                  }), function() {
+                    ui.draggable.animate({left: '', top: ''}, jqyouiOptions.revertDuration || 0);
+                  });
+                }
+              });
+          } else {
+            element.droppable({disabled: true});
+          }
+
+          if (killWatcher && angular.isDefined(newValue) && (angular.equals(attrs.drop, 'true') || angular.equals(attrs.drop, 'false'))) {
+            killWatcher();
+            killWatcher = null;
+          }
+        };
+
+        killWatcher = scope.$watch(function() { return scope.$eval(attrs.drop); }, updateDroppable);
+        updateDroppable();
+        
+        element.on('$destroy', function() {
+          element.droppable({disabled: true}).droppable('destroy');
+        });
+      }
+    };
+  }]);
+
+  $.fn.ngattr = function(name, value) {
+    var element = this[0];
+
+    return element.getAttribute(name) || element.getAttribute('data-' + name);
+  };
+})(window, window.angular, window.jQuery);
+
+
+/***/ },
+/* 14 */
 /***/ function(module, exports) {
 
 $(document).ready(function () {
@@ -529,15 +971,15 @@ $(document).ready(function () {
 
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-__webpack_require__(21);
+__webpack_require__(22);
 module.exports = 'ngAnimate';
 
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports) {
 
 /*
@@ -750,16 +1192,16 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 })(angular);
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-__webpack_require__(22);
+__webpack_require__(23);
 
 module.exports = 'ui.bootstrap';
 
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
 /**
@@ -5448,51 +5890,51 @@ angular.module('ui.router.state')
 })(window, window.angular);
 
 /***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
-
-__webpack_require__(23);
-module.exports = angular;
-
-
-/***/ },
 /* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
-// This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.
-__webpack_require__(35)
-__webpack_require__(25)
-__webpack_require__(26)
-__webpack_require__(27)
-__webpack_require__(28)
-__webpack_require__(29)
-__webpack_require__(30)
-__webpack_require__(34)
-__webpack_require__(31)
-__webpack_require__(32)
-__webpack_require__(33)
-__webpack_require__(24)
+__webpack_require__(24);
+module.exports = angular;
+
 
 /***/ },
 /* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
+// This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.
+__webpack_require__(36)
+__webpack_require__(26)
+__webpack_require__(27)
+__webpack_require__(28)
+__webpack_require__(29)
+__webpack_require__(30)
+__webpack_require__(31)
+__webpack_require__(35)
+__webpack_require__(32)
+__webpack_require__(33)
+__webpack_require__(34)
+__webpack_require__(25)
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
 var app = __webpack_require__(0);
 
-app.factory('todoService', ['$http','authService', function ($http,authService) {
+app.factory('todoService', ['$http', 'authService', function ($http, authService) {
     let todoServiceData = [];//JSON.parse(localStorage.getItem('allTodos'));
-    if(!todoServiceData){
+    if (!todoServiceData) {
         todoServiceData = [];
     }
     let isDataDownloadedFromServer = false;
     let isDownloading = false;
     // const filterParams = ['deadline','title','-isUrgent'];
     const filterParams = [
-        {'name':'-------Choose Filter------','value':''},
-        {'name':'Deadline','value':'deadlineTimestamp'},
-        {'name':'Name','value':'title'},
-        {'name':'Urgent','value':'-isUrgent'},
-        ];
+        {'name': '-------Choose Filter------', 'value': ''},
+        {'name': 'Deadline', 'value': 'deadlineTimestamp'},
+        {'name': 'Name', 'value': 'title'},
+        {'name': 'Urgent', 'value': '-isUrgent'},
+    ];
     const todoService = {};
     //get data
     todoService.getDataFromServer = function (callback) {
@@ -5501,9 +5943,9 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
             method: 'post',
             url: '/getdata',
             data: data
-        }) .then((obj) => {
+        }).then((obj) => {
             todoServiceData = todoServiceData.concat(obj.data);
-            localStorage.setItem('allTodos',JSON.stringify(todoServiceData));
+            localStorage.setItem('allTodos', JSON.stringify(todoServiceData));
             isDataDownloadedFromServer = true;
             isDownloading = false;
             return callback(todoServiceData);
@@ -5516,9 +5958,9 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
 
     //add data
     todoService.addTodo = function (todo) {
-        var newTodo = {'todo':todo,'user':authService.getUser()};
+        var newTodo = {'todo': todo, 'user': authService.getUser()};
         todoServiceData.push(todo);
-        localStorage.setItem('allTodos',JSON.stringify(todoServiceData));
+        localStorage.setItem('allTodos', JSON.stringify(todoServiceData));
         $http({
             method: 'post',
             url: '/addtodo',
@@ -5536,7 +5978,7 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
 
     //update data
     todoService.updateTodo = function (todoToUpdate) {
-        var data = {'todo':todoToUpdate,'user':authService.getUser()};
+        var data = {'todo': todoToUpdate, 'user': authService.getUser()};
         $http({
             method: 'post',
             url: '/updatetodo',
@@ -5553,43 +5995,42 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
     todoService.deleteTodo = function (todo) {
 
 
-
         const findedTodoIndex = todoServiceData.findIndex((neededTodo, index) => {
             if (neededTodo.id === todo.id) {
                 return true;
             }
         });
 
-        var data = {'todo':todo,'user':authService.getUser()};
+        var data = {'todo': todo, 'user': authService.getUser()};
         $http({
             method: 'post',
             url: '/deletedata',
             data: data
-        })            .then((obj) => {
+        }).then((obj) => {
             console.log(obj);
-        },(error)=>{
+        }, (error) => {
             console.log(error);
         });
 
 
         todoServiceData.splice(findedTodoIndex, 1);
-        localStorage.setItem('allTodos',JSON.stringify(todoServiceData));
-     /*   $http.delete("/deletedata/"+todo.id)
-            .then((obj) => {
-                console.log(obj);
-            },(error)=>{
-                console.log(error);
-            });*/
+        localStorage.setItem('allTodos', JSON.stringify(todoServiceData));
+        /*   $http.delete("/deletedata/"+todo.id)
+         .then((obj) => {
+         console.log(obj);
+         },(error)=>{
+         console.log(error);
+         });*/
 
 
     };
 
-    todoService.getAllTodos = function(callback){
+    todoService.getAllTodos = function (callback) {
 
         if (callback && !isDownloading) {
-/*            if(todoServiceData.length > 0){
-                return callback(todoServiceData);
-            }*/
+            /*            if(todoServiceData.length > 0){
+             return callback(todoServiceData);
+             }*/
 
             isDownloading = true;
             if (!isDataDownloadedFromServer) {
@@ -5603,38 +6044,55 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
     };
 
     todoService.getFilteredTodos = function (column) {
-            return todoServiceData.filter((todo) => {
-                return todo.statusId === column.id;
-            });
+        return todoServiceData.filter((todo) => {
+            return todo.statusId === column.id;
+        });
 
     };
 
     todoService.getTodo = function (id) {
         return todoServiceData.find((neededTodo) => {
-            if(neededTodo.id === Number(id)){
-                console.log("neededTodo.id = " + neededTodo.id)
-                console.log("Number(id) = " + Number(id))
+            if (neededTodo.id === Number(id)) {
                 return neededTodo;
-
             }
-           });
+        });
     };
 
     todoService.makeUrgent = function (todo) {
         const findedTodo = todoServiceData.find((neededTodo) => neededTodo.id === todo.id);
         findedTodo.isUrgent = !findedTodo.isUrgent;
-        localStorage.setItem('allTodos',JSON.stringify(todoServiceData));
+        localStorage.setItem('allTodos', JSON.stringify(todoServiceData));
         this.updateTodo(findedTodo);
     };
 
-
-    todoService.updateData = function (column, todo, status) {
-        const findedTodo = todoServiceData.find((neededTodo) => neededTodo.id === todo.id);
+    todoService.updateData = function (column, todo,callback) {
+        const neededId = todo.id || Number(todo);
+        const findedTodo = todoServiceData.find(
+            (neededTodo) => neededTodo.id === neededId);
         if (findedTodo) {
-            findedTodo.statusId = Number(column);
-            findedTodo.status = status;
-            localStorage.setItem('allTodos',JSON.stringify(todoServiceData));
+            let newStatus = column.id;
+            if(typeof newStatus !=='number'){
+                newStatus = Number(column);
+            }
+            if(findedTodo.statusId === newStatus){
+                if(callback){
+                    callback(false);
+                }
+                return;
+            }
+            findedTodo.statusId = newStatus;
+            if(status){
+                findedTodo.status = status;
+            }
+            findedTodo.status = column.name;
+            if(column.name){
+                findedTodo.status = column.name;
+            }
+            localStorage.setItem('allTodos', JSON.stringify(todoServiceData));
             this.updateTodo(findedTodo);
+            if(callback){
+                callback(true);
+            }
         }
     };
 
@@ -5642,20 +6100,20 @@ app.factory('todoService', ['$http','authService', function ($http,authService) 
         return filterParams;
     };
 
-    todoService.filterTodoBySearch = function (todo,searchValue) {
+    todoService.filterTodoBySearch = function (todo, searchValue) {
         let containsSearchVal = false;
         const neededString = searchValue.toLocaleLowerCase();
-        if(todo.title){
+        if (todo.title) {
             const neededTitle = todo.title.toLocaleLowerCase();
-            if(neededTitle.indexOf(searchValue) >=0){
+            if (neededTitle.indexOf(searchValue) >= 0) {
                 containsSearchVal = true;
             }
         }
 
-        if(!containsSearchVal){
-            if(todo.description){
+        if (!containsSearchVal) {
+            if (todo.description) {
                 const neededDesc = todo.description.toLocaleLowerCase();
-                if(neededDesc.indexOf(searchValue) >=0){
+                if (neededDesc.indexOf(searchValue) >= 0) {
                     containsSearchVal = true;
                 }
             }
@@ -5690,14 +6148,14 @@ app.factory('columnsService', function () {
     return columnsService;
 });
 
-app.factory('authService', ['$http','$state',function ($http,$state) {
+app.factory('authService', ['$http', '$state', function ($http, $state) {
     const authService = {};
     // = false;
     let user = JSON.parse(localStorage.getItem('user'));
     let isLogged;
-    authService.createNewUser = function (authData,callback) {
-        if(authData.remember){
-            localStorage.setItem('user',JSON.stringify(authData));
+    authService.createNewUser = function (authData, callback) {
+        if (authData.remember) {
+            localStorage.setItem('user', JSON.stringify(authData));
         }
         $http({
             method: 'post',
@@ -5711,16 +6169,16 @@ app.factory('authService', ['$http','$state',function ($http,$state) {
             //TODO add user to local storage and check for data
 
         }, function errorCallback(response) {
-            if(response.status=== 403){
+            if (response.status === 403) {
                 callback(response);
             }
             console.log('error')
         });
     };
 
-    authService.loginUser = function (authData,callback) {
-        if(authData.remember){
-            localStorage.setItem('user',JSON.stringify(authData));
+    authService.loginUser = function (authData, callback) {
+        if (authData.remember) {
+            localStorage.setItem('user', JSON.stringify(authData));
         }
         $http({
             method: 'post',
@@ -5740,7 +6198,7 @@ app.factory('authService', ['$http','$state',function ($http,$state) {
     };
 
     authService.getUser = function () {
-        if(Object.keys(user).length === 0){
+        if (Object.keys(user).length === 0) {
             user = JSON.parse(localStorage.getItem('user'));
         }
         return user;
@@ -5762,7 +6220,7 @@ app.factory('authService', ['$http','$state',function ($http,$state) {
 }]);
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports) {
 
 /**
@@ -9923,7 +10381,7 @@ angular.module('ngAnimate', [], function initAngularHelpers() {
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports) {
 
 /*
@@ -17704,7 +18162,7 @@ angular.module('ui.bootstrap.timepicker').run(function() {!angular.$$csp().noInl
 angular.module('ui.bootstrap.typeahead').run(function() {!angular.$$csp().noInlineStyle && !angular.$$uibTypeaheadCss && angular.element(document).find('head').prepend('<style type="text/css">[uib-typeahead-popup].dropdown-menu{display:block;}</style>'); angular.$$uibTypeaheadCss = true; });
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports) {
 
 /**
@@ -51054,7 +51512,7 @@ $provide.value("$locale", {
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -51222,7 +51680,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -51322,7 +51780,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -51453,7 +51911,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -51696,7 +52154,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -51914,7 +52372,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -52085,7 +52543,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -52430,7 +52888,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -52544,7 +53002,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -52722,7 +53180,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -52883,7 +53341,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -53409,7 +53867,7 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports) {
 
 /* ========================================================================
@@ -53474,65 +53932,66 @@ $provide.value("$locale", {
 
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports) {
 
 module.exports = "<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-offset-4 col-sm-4\">\r\n            <form class=\"todo-form\" ng-submit=\"addTodoCtrl.addTodo($event)\">\r\n                <div class=\"form-group\">\r\n                    <label for=\"title\">Title</label>\r\n                    <input type=\"text\" id=\"title\" class=\"form-control\" name=\"title\" ng-model=\"addTodoCtrl.todo.title\"\r\n                           placeholder=\"todo title\">\r\n                </div>\r\n                <div class=\"form-group\">\r\n                    <label for=\"todoDescription\">Description</label>\r\n            <textarea class=\"form-control\" rows=\"3\"  id=\"todoDescription\" placeholder=\"Description\"\r\n                      ng-model=\"addTodoCtrl.todo.description\"></textarea>\r\n                </div>\r\n                <div class=\"form-group\">\r\n                    <label for=\"datepicker\">Deadline date</label>\r\n                    <input type=\"text\" id=\"datepicker\" class=\"form-control\" ng-model=\"addTodoCtrl.todo.deadline\" placeholder=\"todo deadline\" mydatepicker />\r\n                </div>\r\n\r\n                <div class=\"checkbox\">\r\n                    <input type=\"checkbox\" id=\"isUrgent\" name=\"isUrgent\"\r\n                           ng-model=\"addTodoCtrl.todo.isUrgent\"\r\n                           ng-checked=\"addTodoCtrl.todo.isUrgent\"><label for=\"isUrgent\">Urgent</label>\r\n                </div>\r\n                <button type=\"submit\" ng-disabled=\"!addTodoCtrl.todo.title\" class=\"btn btn-default\">Add todo</button>\r\n            </form>\r\n        </div>\r\n\r\n    </div>\r\n</div>";
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports) {
 
 module.exports = "<section class=\"auth\">\r\n\r\n    <form class=\"auth-form\">\r\n        <h3>Please, log in or sign in</h3>\r\n        <div class=\"form-group\">\r\n            <input type=\"text\" class=\"auth-form-input\" ng-model=\"authCtrl.user.login\" placeholder=\"input your login\">\r\n        </div>\r\n\r\n        <div ng-show=\"authCtrl.show\" class=\"error-auth\">{{authCtrl.responseText}}</div>\r\n        <div class=\"form-group\">\r\n            <input type=\"password\"  class=\"auth-form-input\" ng-model=\"authCtrl.user.password\" placeholder=\"input your password\">\r\n        </div>\r\n        <div class=\"checkbox\">\r\n            <input type=\"checkbox\" id=\"remember\"\r\n                   ng-model=\"authCtrl.user.remember\"\r\n                   ng-checked=\"authCtrl.user.remember\"><label for=\"remember\">Remember me</label>\r\n        </div>\r\n        <button type=\"submit\" class=\"btn btn-info btn-lg\" ng-click=\"authCtrl.createNewUser($event)\">Sign Up</button>\r\n        <button type=\"submit\" class=\"btn btn-success  btn-lg btn-logIn\" ng-click=\"authCtrl.loginUser($event)\">Log In</button>\r\n    </form>\r\n</section>";
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports) {
 
 module.exports = "<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-offset-4 col-sm-4\">\r\n            <form class=\"todo-form\" ng-submit=\"editCtrl.updateTodo($event)\">\r\n                {{}}\r\n                <div class=\"form-group\">\r\n                    <label for=\"title\">Title</label>\r\n                    <input type=\"text\" id=\"title\" class=\"form-control\" name=\"title\" ng-model=\"editCtrl.todo.title\"\r\n                           placeholder=\"todo title\">\r\n                </div>\r\n\r\n                <div class=\"form-group\">\r\n                    <label for=\"todoDescription\">Description</label>\r\n                    <textarea class=\"form-control\" id=\"todoDescription\" rows=\"3\" placeholder=\"Description\"\r\n                              ng-model=\"editCtrl.todo.description\"></textarea>\r\n                </div>\r\n                <div class=\"form-group\">\r\n                    <label for=\"datepicker\">Deadline date</label>\r\n                    <input type=\"text\" id=\"datepicker\" class=\"form-control\" ng-model=\"editCtrl.todo.deadline\"\r\n                           placeholder=\"todo deadline\" mydatepicker/>\r\n                </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"status\">Status</label>\r\n                        <div class=\"select\" id=\"status\">\r\n                            <select ng-model=\"editCtrl.statusId\" class=\"form-control\">\r\n                                <option ng-repeat=\"column in editCtrl.columns\" value=\"{{column.id}}\">{{column.name}}</option>\r\n                            </select>\r\n                        </div>\r\n                    </div>\r\n                <div class=\"checkbox\">\r\n                    <input type=\"checkbox\" id=\"isUrgent\" name=\"isUrgent\"\r\n                           ng-model=\"editCtrl.todo.isUrgent\"\r\n                           ng-checked=\"editCtrl.todo.isUrgent\"><label for=\"isUrgent\">Срочный </label>\r\n                </div>\r\n\r\n                <button type=\"submit\" class=\"btn btn-success\">Save todo</button>\r\n                <button ng-click=\"editCtrl.cancelEditing()\" class=\"btn btn-primary toRight\">Cancel</button>\r\n            </form>\r\n        </div>\r\n\r\n    </div>\r\n</div>";
 
 /***/ },
-/* 39 */
-/***/ function(module, exports) {
-
-module.exports = "<div class=\"container-fluid\">\r\n    <div class=\"row filtersRow\">\r\n            <todo-filters></todo-filters>\r\n    </div>\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-6 col-md-3\" ng-repeat=\"column in columns  track by $index\">\r\n            <div class=\"column\">\r\n                <todo-column></todo-column>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>";
-
-/***/ },
 /* 40 */
 /***/ function(module, exports) {
 
-module.exports = "<nav class=\"navbar navbar-default\">\r\n    <div class=\"container-fluid\">\r\n        <div class=\"collapse navbar-collapse\">\r\n            <ul class=\"nav navbar-nav\">\r\n                <li><a ui-sref=\"all\">All</a></li>\r\n                <li><a ui-sref=\"todo\">Todo</a></li>\r\n                <li><a ui-sref=\"inprocess\">In Process</a></li>\r\n                <li><a ui-sref=\"testing\">Testing</a></li>\r\n                <li><a ui-sref=\"done\">Done</a></li>\r\n                <li><a ui-sref=\"addtodo\">Add Todo</a></li>\r\n                <li ng-click=\"navCtrl.logOut()\" class=\"log-out\" ng-show=\"navCtrl.show\"><a ui-sref=\"addtodo\">Logout</a></li>\r\n            </ul>\r\n        </div><!-- /.navbar-collapse -->\r\n    </div><!-- /.container-fluid -->\r\n</nav>";
+module.exports = "<div class=\"container-fluid\">\r\n    <div class=\"row filtersRow\">\r\n            <todo-filters></todo-filters>\r\n    </div>\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-6 col-md-3\" ng-repeat=\"column in columns  track by $index\">\r\n            <div class=\"column\"  data-drop=\"true\" data-jqyoui-options=\"{revert: 'invalid'}\" jqyoui-droppable=\"{multiple:true, onDrop:'dropCallback(column)'}\">\r\n                <todo-column></todo-column>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>";
 
 /***/ },
 /* 41 */
 /***/ function(module, exports) {
 
-module.exports = "<h2 class='columnTitle'>{{column.name}}</h2><ul><li class='todo' ng-repeat='todo in getTodos(column)  | orderBy: getOrderParam() track by $index'><one-todo todo='todo' columns='columns' deleteTodo='deleteTodo()'></one-todo></li></ul>\r\n";
+module.exports = "<nav class=\"navbar navbar-default\">\r\n    <div class=\"container-fluid\">\r\n        <div class=\"collapse navbar-collapse\">\r\n            <ul class=\"nav navbar-nav\">\r\n                <li><a ui-sref=\"all\">All</a></li>\r\n                <li><a ui-sref=\"todo\">Todo</a></li>\r\n                <li><a ui-sref=\"inprocess\">In Process</a></li>\r\n                <li><a ui-sref=\"testing\">Testing</a></li>\r\n                <li><a ui-sref=\"done\">Done</a></li>\r\n                <li><a ui-sref=\"addtodo\">Add Todo</a></li>\r\n                <li ng-click=\"navCtrl.logOut()\" class=\"log-out\" ng-show=\"navCtrl.show\"><a ui-sref=\"addtodo\">Logout</a></li>\r\n            </ul>\r\n        </div><!-- /.navbar-collapse -->\r\n    </div><!-- /.container-fluid -->\r\n</nav>";
 
 /***/ },
 /* 42 */
 /***/ function(module, exports) {
 
-module.exports = "<div class=\"col-sm-12\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-12\"><h2>Filter by:</h2></div>\r\n    </div>\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-3\">\r\n            <div class=\"select\">\r\n                <select ng-model=\"selectedParam\" class=\"form-control\"\r\n                        ng-change=\"setOrderParam(selectedParam)\">\r\n                    <option ng-repeat=\"filterParam in filterParams\" value=\"{{filterParam.value}}\">{{filterParam.name}}\r\n                    </option>\r\n                </select>\r\n            </div>\r\n        </div>\r\n        <div class=\"col-sm-3\">\r\n            <div class=\"checkbox\">\r\n                <input type=\"checkbox\" id=\"onlyUrgent\" class=\"oneTodocheckbox\" ng-click=\"showOnlyUrgent()\"\r\n                       ng-checked=\"isUrgent\">\r\n                <label for=\"onlyUrgent\" class=\"oneTodoLabel\">Only Urgent</label>\r\n            </div>\r\n        </div>\r\n        <div class=\"col-sm-3\">\r\n            <div class=\"form-group\">\r\n                <input type=\"text\" ng-change=\"filterByValue()\" class=\"form-control\" id=\"search\" name=\"search\"\r\n                       ng-model=\"searchValue\"\r\n                       placeholder=\"Search\">\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n";
+module.exports = "<h2 class='columnTitle'>{{column.name}}</h2><ul><li class='todo' ng-repeat='todo in getTodos(column)  | orderBy: getOrderParam() track by $index'><one-todo todo='todo' columns='columns' ></one-todo></li></ul>\r\n\r\n";
 
 /***/ },
 /* 43 */
 /***/ function(module, exports) {
 
-module.exports = "<section class=\"todoWrapper\" ng-class=\"{urgent:todo.isUrgent}\" ng-show=\"todoCtrl.showTodo(todo)\">\r\n\r\n    <uib-accordion close-others=\"oneAtATime\">\r\n        <div uib-accordion-group class=\"panel-default\"\r\n             is-open=\"status.isFirstOpen\">\r\n            <div uib-accordion-heading>\r\n                <div class=\"row\">\r\n                    <div class=\"col-xs-2 interact-icons\">\r\n                        <a ui-sref=\"edittodo({id:todo.id})\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a>\r\n                    </div>\r\n                    <div class=\"col-xs-8\">\r\n                        <div class=\"mainWrapper\">\r\n                            <div class=\"title\">{{todo.title}}</div>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"col-xs-2 interact-icons delete\">\r\n                        <i class=\"fa fa-times\" aria-hidden=\"true\" ng-click=\"todoCtrl.deleteTodo(todo)\"></i>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                    <h2>Deadline</h2>\r\n                    <p class=\"deadlineTodo\">{{todo.deadline}}</p>\r\n                    <p class=\"deadlineTodo\">timeStamp - {{todo.deadlineTimestamp}}</p>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-6\">\r\n                    <div class=\"checkbox\">\r\n                        <input type=\"checkbox\" class=\"oneTodocheckbox\" ng-click=\"todoCtrl.makeUrgent($event,todo)\"\r\n                               ng-checked='todo.isUrgent'>\r\n                        <span class=\"oneTodoLabel\">Urgent </span>\r\n                    </div>\r\n                </div>\r\n                <div class=\"col-sm-6\">\r\n                    <div class=\"select\">\r\n                        <select ng-model=\"todoCtrl.column\" class=\"form-control\"\r\n                                ng-change=\"todoCtrl.selectChanged(todoCtrl.column,todo)\">\r\n                            <option ng-repeat=\"column in columns\" value=\"{{column.id}}\">{{column.name}}</option>\r\n                        </select>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                    <h2>Descriptrion:</h2>\r\n                    <p>{{todo.description}}</p>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </uib-accordion>\r\n\r\n\r\n</section>";
+module.exports = "<div class=\"col-sm-12\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-12\"><h2>Filter by:</h2></div>\r\n    </div>\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-3\">\r\n            <div class=\"select\">\r\n                <select ng-model=\"selectedParam\" class=\"form-control\"\r\n                        ng-change=\"setOrderParam(selectedParam)\">\r\n                    <option ng-repeat=\"filterParam in filterParams\" value=\"{{filterParam.value}}\">{{filterParam.name}}\r\n                    </option>\r\n                </select>\r\n            </div>\r\n        </div>\r\n        <div class=\"col-sm-3\">\r\n            <div class=\"checkbox\">\r\n                <input type=\"checkbox\" id=\"onlyUrgent\" class=\"oneTodocheckbox\" ng-click=\"showOnlyUrgent()\"\r\n                       ng-checked=\"isUrgent\">\r\n                <label for=\"onlyUrgent\" class=\"oneTodoLabel\">Only Urgent</label>\r\n            </div>\r\n        </div>\r\n        <div class=\"col-sm-3\">\r\n            <div class=\"form-group\">\r\n                <input type=\"text\" ng-change=\"filterByValue()\" class=\"form-control\" id=\"search\" name=\"search\"\r\n                       ng-model=\"searchValue\"\r\n                       placeholder=\"Search\">\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n";
 
 /***/ },
 /* 44 */
+/***/ function(module, exports) {
+
+module.exports = "<section class=\"todoWrapper\" data-id=\"{{todo.id}}\" data-drag=\"true\" jqyoui-draggable=\"{animate:true,}\" data-jqyoui-options=\"{revert: 'invalid'}\" ng-class=\"{urgent:todo.isUrgent}\" ng-show=\"todoCtrl.showTodo(todo)\">\r\n\r\n    <uib-accordion close-others=\"oneAtATime\">\r\n        <div uib-accordion-group class=\"panel-default\"\r\n             is-open=\"status.isFirstOpen\">\r\n            <div uib-accordion-heading>\r\n                <div class=\"row\">\r\n                    <div class=\"col-xs-2 interact-icons\">\r\n                        <a ui-sref=\"edittodo({id:todo.id})\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a>\r\n                    </div>\r\n                    <div class=\"col-xs-8\">\r\n                        <div class=\"mainWrapper\">\r\n                            <div class=\"title\">{{todo.title}}</div>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"col-xs-2 interact-icons delete\">\r\n                        <i class=\"fa fa-times\" aria-hidden=\"true\" ng-click=\"todoCtrl.deleteTodo(todo)\"></i>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                    <h2>Deadline</h2>\r\n                    <p class=\"deadlineTodo\">{{todo.deadline}}</p>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-6\">\r\n                    <div class=\"checkbox\">\r\n                        <input type=\"checkbox\" class=\"oneTodocheckbox\" ng-click=\"todoCtrl.makeUrgent($event,todo)\"\r\n                               ng-checked='todo.isUrgent'>\r\n                        <span class=\"oneTodoLabel\">Urgent </span>\r\n                    </div>\r\n                </div>\r\n                <div class=\"col-sm-6\">\r\n                    <div class=\"select\">\r\n                        <select ng-model=\"todoCtrl.column\" class=\"form-control\"\r\n                                ng-change=\"todoCtrl.selectChanged(todoCtrl.column,todo)\">\r\n                            <option ng-repeat=\"column in columns\" value=\"{{column.id}}\">{{column.name}}</option>\r\n                        </select>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                    <h2>Descriptrion:</h2>\r\n                    <p>{{todo.description}}</p>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </uib-accordion>\r\n\r\n\r\n</section>";
+
+/***/ },
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 //require("jquery");
+__webpack_require__(20);
 __webpack_require__(19);
-__webpack_require__(18);
-__webpack_require__(16);
 __webpack_require__(17);
+__webpack_require__(18);
+__webpack_require__(15);
 __webpack_require__(14);
 __webpack_require__(13);
-__webpack_require__(15);
+__webpack_require__(16);
 __webpack_require__(0);
 __webpack_require__(12);
 __webpack_require__(2);
@@ -53546,7 +54005,7 @@ __webpack_require__(11);
 __webpack_require__(3);
 __webpack_require__(4);
 __webpack_require__(8);
-__webpack_require__(20);
+__webpack_require__(21);
 
 
 

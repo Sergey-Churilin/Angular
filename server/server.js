@@ -26,7 +26,7 @@ app.post('/addtodo', function (req, res) {
             console.log('no id')
         }
         if (user) {
-            user.userTodos.push(data.todo)
+            user.userTodos.push(data.todo);
             user.save(function (err, newUser) {
                 if (err) {
                     console.log('error saving');
