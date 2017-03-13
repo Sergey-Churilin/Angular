@@ -5,7 +5,7 @@ app.factory('todoService', ['$http', 'authService', function ($http, authService
     if (!todoServiceData) {
         todoServiceData = [];
     }
-    let isDataDownloadedFromServer = false;
+    let isDataDownloadedFromServer = authService.isLoggedIn();
     let isDownloading = false;
 
     const filterParams = [
@@ -91,6 +91,7 @@ app.factory('todoService', ['$http', 'authService', function ($http, authService
         todoServiceData.splice(findedTodoIndex, 1);
         localStorage.setItem('allTodos', JSON.stringify(todoServiceData));
     };
+
 
     todoService.getAllTodos = function (callback) {
 
@@ -182,6 +183,11 @@ app.factory('todoService', ['$http', 'authService', function ($http, authService
             }
         }
         return containsSearchVal;
+    };
+
+    todoService.clearData = function () {
+        todoServiceData.length = 0;
+        isDataDownloadedFromServer = false;
     };
 
     return todoService;
@@ -282,7 +288,7 @@ app.factory('authService', ['$http', '$state','$rootScope', function ($http, $st
 
     authService.logOut = function () {
         user = null;
-        localStorage.removeItem('user');
+        localStorage.clear();
         $state.go('auth');
     };
 

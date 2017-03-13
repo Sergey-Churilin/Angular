@@ -1,6 +1,6 @@
 const app = require('../app.js');
 
-app.controller('NavController', ['$scope','authService', function ($scope,authService) {
+app.controller('NavController', ['$scope','authService','todoService', function ($scope,authService,todoService) {
     this.show = authService.isLoggedIn();
 
     $scope.$on('userLoggedIn',(event,args) => {
@@ -9,6 +9,7 @@ app.controller('NavController', ['$scope','authService', function ($scope,authSe
 
     this.logOut = function () {
         authService.logOut();
+        todoService.clearData();
         this.show = false;
     }
 }]);
