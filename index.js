@@ -8,17 +8,17 @@ require("./js/angular-dragdrop");
 require('angular-md5');
 require("./app.js");
 require("./config.js");
-require("./AddTodo/AddTodoController.js");
+require("./Components/AddTodo/AddTodoController.js");
 require("./Directives/datepicker");
 require("./Directives/todoColumn");
 require("./Directives/todoFilters");
-require("./AddTodo/AddTodoController.js");
-require("./Navigation/NavControloler.js");
-require("./ListWrapper/ListController.js");
-require("./TodoController/TodoController.js");
-require("./Authorization/AuthController.js");
-require("./Columns/ColumnController.js");
-require("./EditTodo/EditTodoController.js");
-require("./services/services.js");
+require("./Components/AddTodo/AddTodoController.js");
+require("./Components/Navigation/NavControloler.js");
+require("./Components/ListWrapper/ListController.js");
+require("./Components/TodoController/TodoController.js");
+require("./Components/Authorization/AuthController.js");
+require("./Components/Columns/ColumnController.js");
+require("./Components/EditTodo/EditTodoController.js");
+require("./Services/services.js");
 
 

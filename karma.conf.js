@@ -15,9 +15,6 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-        'services/services.js',
-        'EditTodo/EditTodoController.js',
-        'tests/services-test.js'
     ],
 
 
@@ -38,7 +35,7 @@ module.exports = function(config) {
     reporters: ['progress'],
 
 
-    // web server port
+    // web Server port
     port: 9876,
 
 

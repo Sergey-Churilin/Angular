@@ -1,4 +1,4 @@
-const app = require('../app.js');
+const app = require('../../app.js');
 
 app.controller('TodoController', ['$location', '$scope','todoService', function ($location,$scope, todoService) {
     this.column = $scope.todo.statusId.toString();

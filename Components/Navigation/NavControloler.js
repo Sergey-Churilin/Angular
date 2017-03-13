@@ -1,4 +1,4 @@
-const app = require('../app.js');
+const app = require('../../app.js');
 
 app.controller('NavController', ['$scope','authService','todoService', function ($scope,authService,todoService) {
     this.show = authService.isLoggedIn();

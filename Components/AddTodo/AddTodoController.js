@@ -1,4 +1,4 @@
-const app = require('../app.js');
+const app = require('../../app.js');
 
 app.controller('AddTodoController',['$state','$rootScope','todoService',function ($state,$rootScope,todoService) {
 

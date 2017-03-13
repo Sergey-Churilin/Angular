@@ -1,4 +1,4 @@
-const app = require('../app.js');
+const app = require('../../app.js');
 
 app.controller('EditTodoController', ['$stateParams', '$state', '$rootScope', 'todoService', 'columnsService',
     function ($stateParams, $state, $rootScope, todoService, columnsService) {

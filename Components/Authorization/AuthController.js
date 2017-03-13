@@ -1,4 +1,4 @@
-const app = require('../app.js');
+const app = require('../../app.js');
 
 app.controller('AuthController', ['authService', 'md5', function (authService, md5) {
     this.show = false;

@@ -1,4 +1,4 @@
-const app = require('../app.js');
+const app = require('../../app.js');
 
 app.controller('ColumnController', ['$stateParams','$state', '$scope','todoService', 'columnsService', function ($stateParams,$state,$scope,todoService, columnsService) {
     $scope.columns = columnsService.getColumns();
