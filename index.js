@@ -1,10 +1,10 @@
-//require("jquery");
 require("bootstrap");
 require("angular");
 require('angular-ui-bootstrap');
 require("angular-ui-router");
 require("angular-animate");
 require("./js/customScripts.js");
+require("./js/angular-dragdrop");
 require('angular-md5');
 require("./app.js");
 require("./config.js");

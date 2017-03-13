@@ -1,4 +1,4 @@
-var app = require('../app.js');
+const app = require('../app.js');
 
 app.controller('TodoController', ['$location', '$scope','todoService', function ($location,$scope, todoService) {
     this.column = $scope.todo.statusId.toString();
@@ -8,7 +8,7 @@ app.controller('TodoController', ['$location', '$scope','todoService', function 
         todoService.deleteTodo(todo);
     };
     this.selectChanged = (column,todo) => {
-        todoService.updateData(column,todo,$scope.columns[Number(column)].name);
+        todoService.updateData($scope.columns[Number(column)],todo);
     };
 
     this.makeUrgent = ($event, todo) => {
@@ -36,7 +36,6 @@ app.controller('TodoController', ['$location', '$scope','todoService', function 
 
         return show;
     };
-
 }]);
 
 app.directive('oneTodo', function () {

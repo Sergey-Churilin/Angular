@@ -1,6 +1,6 @@
-var app = require('../app.js');
+const app = require('../app.js');
 
-app.controller('ListController', ['$scope','todoService', 'columnsService', function ($scope,todoService, columnsService) {
+app.controller('ListController', ['$scope', 'todoService', 'columnsService', function ($scope, todoService, columnsService) {
     $scope.columns = columnsService.getColumns();
     $scope.filterParams = todoService.filterParams();
     $scope.selectedParam = $scope.filterParams[0];
