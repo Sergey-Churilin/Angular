@@ -1,4 +1,4 @@
-var app = require('../app.js');
+const app = require('../app.js');
 
 app.controller('ColumnController', ['$stateParams','$state', '$scope','todoService', 'columnsService', function ($stateParams,$state,$scope,todoService, columnsService) {
     $scope.columns = columnsService.getColumns();
@@ -43,7 +43,6 @@ app.controller('ColumnController', ['$stateParams','$state', '$scope','todoServi
             if(shouldReload){
                 curUi.helper[0].style.left = 0;
                 curUi.helper[0].style.top = 0;
-                // $state.reload();
             } else {
                 curUi.helper[0].classList.add('transition');
                 curUi.helper[0].style.left = 0;
@@ -54,5 +53,4 @@ app.controller('ColumnController', ['$stateParams','$state', '$scope','todoServi
             }
         });
     };
-
 }]);

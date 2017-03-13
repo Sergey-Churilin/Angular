@@ -1,50 +1,54 @@
-html,body{
+html, body {
     height: 100%;
 }
-body{
+
+body {
     background: #f6f6f6;
 }
 
-.navbar-nav>li {
+.navbar-nav > li {
     float: none;
     display: inline-block;
     font-size: 18px;
 }
 
-.navbar-nav>li:hover{
+.navbar-nav > li:hover {
     background: #e6e6e6;
 }
 
-.navbar-nav{
+.navbar-nav {
     float: none;
     text-align: center;
 }
 
-.todoWrapper{
+.todoWrapper {
     width: 90%;
     margin: 10px auto;
     border: 1px solid #000;
-    border-radius:10px;
+    border-radius: 10px;
     background: rgba(0, 255, 255, 0.17);
-    /*margin-bottom: 20px;*/
     padding: 10px;
 }
-.transition{
+
+.transition {
     transition: all .3s;
 }
-.todoWrapper.urgent{
+
+.todoWrapper.urgent {
     background: rgba(205, 97, 108, 0.55);
 }
-.todoWrapper.todoDone{
+
+.todoWrapper.todoDone {
     background: rgba(15, 205, 95, 0.55);
 }
-.column{
+
+.column {
     border: 1px solid deepskyblue;
     border-radius: 10px;
     margin-bottom: 30px;
 }
 
-.columnTitle{
+.columnTitle {
     text-align: center;
     background: deepskyblue;
     margin: 0 0 20px 0;
@@ -53,131 +57,134 @@ body{
     border-top-right-radius: 10px;
     color: #fff;
 }
-.clearfix:after{
+
+.clearfix:after {
     content: '';
     clear: both;
     visibility: hidden;
     display: block;
 
 }
-ul{
+
+ul {
     list-style-type: none;
 }
-.list{
+
+.list {
     margin-bottom: 10px;
 }
-.select{
+
+.select {
     text-align: center;
 }
-.urgentTask{
+
+.urgentTask {
     background: red;
 }
-/*.mainWrapper{
-    width: 100px;
-    margin-left: 10px;
-}*/
 
-.filtersRow{
+.filtersRow {
     margin-bottom: 30px;
 }
 
-.toRight{
+.toRight {
     float: right;
 }
 
-.mainWrapper .title{
+.mainWrapper .title {
     font-size: 32px;
     line-height: 32px;
     color: #333;
     text-align: center;
-    /*margin-top: -30px;*/
-    /*margin-bottom: 20px;*/
 }
-.photo{
+
+.photo {
     margin-left: 170px;
     height: 100%;
 }
-.photo img{
+
+.photo img {
     width: 50px;
 }
-ul{
+
+ul {
     padding-left: 0;
 }
-.interact-icons{
+
+.interact-icons {
     margin-top: -10px;
 }
-.interact-icons .fa{
+
+.interact-icons .fa {
     cursor: pointer;
     font-size: 22px;
     text-align: right;
-    /*padding-top: 6px;*/
 }
 
-.deadlineTodo{
+.deadlineTodo {
     background: rgba(255, 0, 0, 0.6);
-    /*text-align: center;*/
-    /*margin: 20px 0;*/
 }
 
-.interact-icons.delete{
+.interact-icons.delete {
     text-align: right;
 }
-.panel-heading{
+
+.panel-heading {
     padding: 10px 0;
 }
 
-.checkbox input[type=checkbox]{
+.checkbox input[type=checkbox] {
     margin-left: 0;
 }
-.checkbox{
+
+.checkbox {
     margin-top: 0;
     margin-bottom: 0;
 }
-.oneTodocheckbox{
+
+.oneTodocheckbox {
     width: 20px;
     height: 20px;
 }
 
-.oneTodoLabel{
+.oneTodoLabel {
     font-size: 18px;
     display: inline-block;
     margin-left: 20px;
 }
-/*
-auth
-*/
-.auth{
+
+.auth {
     padding: 40px 0;
     background: #3ab18a;
 }
 
-.auth-form{
+.auth-form {
     width: 300px;
     margin: 0 auto;
     text-align: left;
 }
 
-.auth-form-input{
+.auth-form-input {
     width: 300px;
     height: 40px;
     padding-left: 10px;
     color: #333;
 }
-.btn-logIn{
+
+.btn-logIn {
     float: right;
 }
 
-label[for="remember"]{
+label[for="remember"] {
     font-size: 20px;
     padding-left: 30px;
 }
 
-#remember{
+#remember {
     width: 20px;
     height: 20px;
 }
 
-.todo-form{
+.todo-form {
     box-sizing: content-box;
     width: 300px;
     margin: 0 auto;
@@ -185,11 +192,15 @@ label[for="remember"]{
     background: #f0f0f0;
 }
 
-.log-out{
+.log-out {
     background: #baecba;
 }
 
-.error-auth{
+.log-out.active{
+    background: #40ec4d;
+}
+
+.error-auth {
     font-size: 20px;
     color: #ff0039;
     text-align: center;

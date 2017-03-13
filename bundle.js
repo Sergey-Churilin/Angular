@@ -68,27 +68,26 @@
 /* 0 */
 /***/ function(module, exports) {
 
-var app = angular.module('app', ['ui.router','angular-md5','ui.bootstrap','ngAnimate','ngDragDrop']);
+const app = angular.module('app', ['ui.router', 'angular-md5', 'ui.bootstrap', 'ngAnimate', 'ngDragDrop']);
 
-
-app.run(['$rootScope', '$state','authService', function ($rootScope, $state,authService) {
-        $rootScope.$on('$stateChangeStart', function (event,toState,toParams,fromState) {
-            $rootScope.previousState = fromState;
-            if (!authService.isLoggedIn()) {
-                if(toState.name !== 'auth'){
-                    console.log('DENY : Redirecting to Login');
-                    event.preventDefault();
-                    $state.go('auth')
-                }
+app.run(['$rootScope', '$state', 'authService', function ($rootScope, $state, authService) {
+    $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState) {
+        $rootScope.previousState = fromState;
+        if (!authService.isLoggedIn()) {
+            if (toState.name !== 'auth') {
+                console.log('DENY : Redirecting to Login');
+                event.preventDefault();
+                $state.go('auth')
             }
-            else {
-                if(toState.name === 'auth'){
-                    event.preventDefault();
-                    $state.go('all');
-                }
+        }
+        else {
+            if (toState.name === 'auth') {
+                event.preventDefault();
+                $state.go('all');
             }
-        });
-    }]);
+        }
+    });
+}]);
 
 module.exports = app;
 
@@ -104,10 +103,9 @@ module.exports = "<todo-filters></todo-filters>\r\n\r\n<div class=\"container\">
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-var app = __webpack_require__(0);
+const app = __webpack_require__(0);
 
 app.controller('AddTodoController',['$state','$rootScope','todoService',function ($state,$rootScope,todoService) {
-    // this.enabled =  (this.todo && this.todo.title) !='';
 
     this.isDisabledDate = function(currentDate, mode) {
         return mode === 'day' && (currentDate.getDay() === 0 || currentDate.getDay() === 6);
@@ -130,39 +128,33 @@ app.controller('AddTodoController',['$state','$rootScope','todoService',function
     };
 }]);
 
-/*app.directive('addTodo',function () {
-    return {
-        controller:'AddTodoController',
-        controllerAs:"addTodoCtrl",
-        template: require("./add-todo-template.html")
-    }
-});*/
-
 /***/ },
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 const app = __webpack_require__(0);
 
-app.controller('AuthController', ['authService','md5', function (authService,md5) {
+app.controller('AuthController', ['authService', 'md5', function (authService, md5) {
     this.show = false;
     this.loginUser = ($event) => {
         $event.preventDefault();
-        if(this.user && this.user.login.length > 0 && this.user.password && this.user.password.length > 0){
-            authService.loginUser({"login":this.user.login,"pass":md5.createHash(this.user.password),'remember':this.user.remember},(response) => {
-                if(response){
+        if (this.user && this.user.login.length > 0 && this.user.password && this.user.password.length > 0) {
+            authService.loginUser({
+                "login": this.user.login,
+                "pass": md5.createHash(this.user.password),
+                'remember': this.user.remember
+            }, (response) => {
+                if (response) {
                     this.responseText = response.data;
                     this.show = true;
                 }
             });
         }
-
     };
 
-    this.createNewUser =  ($event) =>  {
+    this.createNewUser = ($event) => {
         $event.preventDefault();
-        if(this.user && this.user.login.length > 0 && this.user.password && this.user.password.length > 0) {
-
+        if (this.user && this.user.login.length > 0 && this.user.password && this.user.password.length > 0) {
             authService.createNewUser({
                 "login": this.user.login,
                 "pass": md5.createHash(this.user.password),
@@ -175,24 +167,13 @@ app.controller('AuthController', ['authService','md5', function (authService,md5
             });
         }
     }
-
 }]);
-
-/*
-app.directive('authForm', function () {
-    return {
-        controller: 'AuthController',
-        controllerAs: "authCtrl",
-        template: require("./auth-template.html")
-    }
-});*/
-
 
 /***/ },
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-var app = __webpack_require__(0);
+const app = __webpack_require__(0);
 
 app.controller('ColumnController', ['$stateParams','$state', '$scope','todoService', 'columnsService', function ($stateParams,$state,$scope,todoService, columnsService) {
     $scope.columns = columnsService.getColumns();
@@ -237,7 +218,6 @@ app.controller('ColumnController', ['$stateParams','$state', '$scope','todoServi
             if(shouldReload){
                 curUi.helper[0].style.left = 0;
                 curUi.helper[0].style.top = 0;
-                // $state.reload();
             } else {
                 curUi.helper[0].classList.add('transition');
                 curUi.helper[0].style.left = 0;
@@ -248,14 +228,13 @@ app.controller('ColumnController', ['$stateParams','$state', '$scope','todoServi
             }
         });
     };
-
 }]);
 
 /***/ },
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-var app = __webpack_require__(0);
+const app = __webpack_require__(0);
 
 app.directive('mydatepicker', function () {
     return {
@@ -273,7 +252,7 @@ app.directive('mydatepicker', function () {
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-var app = __webpack_require__(0);
+const app = __webpack_require__(0);
 
 app.directive('todoColumn', function () {
     return {
@@ -286,7 +265,7 @@ app.directive('todoColumn', function () {
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-var app = __webpack_require__(0);
+const app = __webpack_require__(0);
 
 app.directive('todoFilters', function () {
     return {
@@ -303,7 +282,7 @@ app.directive('todoFilters', function () {
 const app = __webpack_require__(0);
 
 app.controller('EditTodoController', ['$stateParams', '$state', '$rootScope', 'todoService', 'columnsService',
-    function ($stateParams, $state, $rootScope, todoService,columnsService) {
+    function ($stateParams, $state, $rootScope, todoService, columnsService) {
         this.todo = todoService.getTodo($stateParams.id);
         this.columns = columnsService.getColumns();
         if (!this.todo) {
@@ -319,11 +298,11 @@ app.controller('EditTodoController', ['$stateParams', '$state', '$rootScope', 't
             this.todo.statusId = Number(this.statusId);
             this.todo.status = this.columns[Number(this.statusId)].name;
             const parts = this.todo.deadline.split('-');
-            const timestamp = new Date(parts[2],parts[1]-1,parts[0]).getTime();
+            const timestamp = new Date(parts[2], parts[1] - 1, parts[0]).getTime();
             this.todo.deadlineTimestamp = timestamp;
             todoService.updateTodo(this.todo);
 
-            if($rootScope.previousState.name){
+            if ($rootScope.previousState.name) {
                 $state.go($rootScope.previousState.name)
             }
         };
@@ -337,9 +316,9 @@ app.controller('EditTodoController', ['$stateParams', '$state', '$rootScope', 't
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-var app = __webpack_require__(0);
+const app = __webpack_require__(0);
 
-app.controller('ListController', ['$scope','todoService', 'columnsService', function ($scope,todoService, columnsService) {
+app.controller('ListController', ['$scope', 'todoService', 'columnsService', function ($scope, todoService, columnsService) {
     $scope.columns = columnsService.getColumns();
     $scope.filterParams = todoService.filterParams();
     $scope.selectedParam = $scope.filterParams[0];
@@ -373,11 +352,16 @@ app.controller('ListController', ['$scope','todoService', 'columnsService', func
 
 const app = __webpack_require__(0);
 
-app.controller('NavController', ['authService', function (authService) {
+app.controller('NavController', ['$scope','authService', function ($scope,authService) {
     this.show = authService.isLoggedIn();
+
+    $scope.$on('userLoggedIn',(event,args) => {
+        this.show = true;
+    });
 
     this.logOut = function () {
         authService.logOut();
+        this.show = false;
     }
 }]);
 
@@ -393,7 +377,7 @@ app.directive('appNavigation', function () {
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-var app = __webpack_require__(0);
+const app = __webpack_require__(0);
 
 app.controller('TodoController', ['$location', '$scope','todoService', function ($location,$scope, todoService) {
     this.column = $scope.todo.statusId.toString();
@@ -452,64 +436,63 @@ app.directive('oneTodo', function () {
 
 const app = __webpack_require__(0);
 
-const config =  app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('auth');
     $stateProvider
         .state('all', {
             url: '/all',
-            controller:'ColumnController',
-            template:__webpack_require__(40)
+            controller: 'ColumnController',
+            template: __webpack_require__(40)
         })
         .state('todo', {
             url: '/todo',
-            controller:'ColumnController',
-            template:__webpack_require__(1),
-            params:{
-                id:0
+            controller: 'ColumnController',
+            template: __webpack_require__(1),
+            params: {
+                id: 0
             }
         })
         .state('inprocess', {
             url: '/inprocess',
-            controller:'ColumnController',
-            template:__webpack_require__(1),
-            params:{
-                id:1
+            controller: 'ColumnController',
+            template: __webpack_require__(1),
+            params: {
+                id: 1
             }
         })
         .state('testing', {
             url: '/testing',
-            controller:'ColumnController',
-            template:__webpack_require__(1),
-            params:{
-                id:2
+            controller: 'ColumnController',
+            template: __webpack_require__(1),
+            params: {
+                id: 2
             }
         })
         .state('done', {
             url: '/done',
-            controller:'ColumnController',
-            template:__webpack_require__(1),
-            params:{
-                id:3
+            controller: 'ColumnController',
+            template: __webpack_require__(1),
+            params: {
+                id: 3
             }
         })
         .state('edittodo', {
             url: '/edittodo/:id',
-            controller:'EditTodoController',
-            controllerAs:'editCtrl',
-            template:__webpack_require__(39),
+            controller: 'EditTodoController',
+            controllerAs: 'editCtrl',
+            template: __webpack_require__(39),
         })
         .state('addtodo', {
             url: '/addtodo',
-            controller:'AddTodoController',
-            controllerAs:'addTodoCtrl',
-            template:__webpack_require__(37),
+            controller: 'AddTodoController',
+            controllerAs: 'addTodoCtrl',
+            template: __webpack_require__(37),
         })
         .state('auth', {
             url: '/auth',
-            controller:'AuthController',
-            controllerAs:'authCtrl',
-            template:__webpack_require__(38),
-            // templateUrl: "Authorization/auth-template.html",
+            controller: 'AuthController',
+            controllerAs: 'authCtrl',
+            template: __webpack_require__(38),
         })
 }]);
 
@@ -5919,16 +5902,16 @@ __webpack_require__(25)
 /* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
-var app = __webpack_require__(0);
+const app = __webpack_require__(0);
 
 app.factory('todoService', ['$http', 'authService', function ($http, authService) {
-    let todoServiceData = [];//JSON.parse(localStorage.getItem('allTodos'));
+    let todoServiceData = [];
     if (!todoServiceData) {
         todoServiceData = [];
     }
     let isDataDownloadedFromServer = false;
     let isDownloading = false;
-    // const filterParams = ['deadline','title','-isUrgent'];
+
     const filterParams = [
         {'name': '-------Choose Filter------', 'value': ''},
         {'name': 'Deadline', 'value': 'deadlineTimestamp'},
@@ -5936,6 +5919,7 @@ app.factory('todoService', ['$http', 'authService', function ($http, authService
         {'name': 'Urgent', 'value': '-isUrgent'},
     ];
     const todoService = {};
+
     //get data
     todoService.getDataFromServer = function (callback) {
         const data = authService.getUser();
@@ -5951,14 +5935,13 @@ app.factory('todoService', ['$http', 'authService', function ($http, authService
             return callback(todoServiceData);
         }, (error) => {
             isDownloading = false;
-            console.log('error to download')
             return callback('');
         });
     };
 
     //add data
     todoService.addTodo = function (todo) {
-        var newTodo = {'todo': todo, 'user': authService.getUser()};
+        const newTodo = {'todo': todo, 'user': authService.getUser()};
         todoServiceData.push(todo);
         localStorage.setItem('allTodos', JSON.stringify(todoServiceData));
         $http({
@@ -5966,19 +5949,18 @@ app.factory('todoService', ['$http', 'authService', function ($http, authService
             url: '/addtodo',
             data: newTodo
         }).then(function successCallback(response) {
-            console.log(response)
 
             //set temperary as stub
             isDataDownloadedFromServer = true;
 
         }, function errorCallback(response) {
-            console.log('error')
+            console.log('error on client in adding todo')
         });
     };
 
     //update data
     todoService.updateTodo = function (todoToUpdate) {
-        var data = {'todo': todoToUpdate, 'user': authService.getUser()};
+        const data = {'todo': todoToUpdate, 'user': authService.getUser()};
         $http({
             method: 'post',
             url: '/updatetodo',
@@ -5993,15 +5975,13 @@ app.factory('todoService', ['$http', 'authService', function ($http, authService
 
     //delete todo
     todoService.deleteTodo = function (todo) {
-
-
         const findedTodoIndex = todoServiceData.findIndex((neededTodo, index) => {
             if (neededTodo.id === todo.id) {
                 return true;
             }
         });
 
-        var data = {'todo': todo, 'user': authService.getUser()};
+        const data = {'todo': todo, 'user': authService.getUser()};
         $http({
             method: 'post',
             url: '/deletedata',
@@ -6012,26 +5992,13 @@ app.factory('todoService', ['$http', 'authService', function ($http, authService
             console.log(error);
         });
 
-
         todoServiceData.splice(findedTodoIndex, 1);
         localStorage.setItem('allTodos', JSON.stringify(todoServiceData));
-        /*   $http.delete("/deletedata/"+todo.id)
-         .then((obj) => {
-         console.log(obj);
-         },(error)=>{
-         console.log(error);
-         });*/
-
-
     };
 
     todoService.getAllTodos = function (callback) {
 
         if (callback && !isDownloading) {
-            /*            if(todoServiceData.length > 0){
-             return callback(todoServiceData);
-             }*/
-
             isDownloading = true;
             if (!isDataDownloadedFromServer) {
                 return this.getDataFromServer(callback);
@@ -6065,32 +6032,32 @@ app.factory('todoService', ['$http', 'authService', function ($http, authService
         this.updateTodo(findedTodo);
     };
 
-    todoService.updateData = function (column, todo,callback) {
+    todoService.updateData = function (column, todo, callback) {
         const neededId = todo.id || Number(todo);
         const findedTodo = todoServiceData.find(
             (neededTodo) => neededTodo.id === neededId);
         if (findedTodo) {
             let newStatus = column.id;
-            if(typeof newStatus !=='number'){
+            if (typeof newStatus !== 'number') {
                 newStatus = Number(column);
             }
-            if(findedTodo.statusId === newStatus){
-                if(callback){
+            if (findedTodo.statusId === newStatus) {
+                if (callback) {
                     callback(false);
                 }
                 return;
             }
             findedTodo.statusId = newStatus;
-            if(status){
+            if (status) {
                 findedTodo.status = status;
             }
             findedTodo.status = column.name;
-            if(column.name){
+            if (column.name) {
                 findedTodo.status = column.name;
             }
             localStorage.setItem('allTodos', JSON.stringify(todoServiceData));
             this.updateTodo(findedTodo);
-            if(callback){
+            if (callback) {
                 callback(true);
             }
         }
@@ -6126,8 +6093,8 @@ app.factory('todoService', ['$http', 'authService', function ($http, authService
 
 
 app.factory('columnsService', function () {
-    var columnsService = {};
-    var columns = [{
+    const columnsService = {};
+    const columns = [{
         'name': 'Todo',
         'id': 0
     }, {
@@ -6148,14 +6115,18 @@ app.factory('columnsService', function () {
     return columnsService;
 });
 
-app.factory('authService', ['$http', '$state', function ($http, $state) {
+app.factory('authService', ['$http', '$state','$rootScope', function ($http, $state,$rootScope) {
     const authService = {};
-    // = false;
+
     let user = JSON.parse(localStorage.getItem('user'));
     let isLogged;
     authService.createNewUser = function (authData, callback) {
         if (authData.remember) {
             localStorage.setItem('user', JSON.stringify(authData));
+        }else {
+            if(user){
+                localStorage.removeItem('user');
+            }
         }
         $http({
             method: 'post',
@@ -6165,7 +6136,8 @@ app.factory('authService', ['$http', '$state', function ($http, $state) {
             user = authData;
             isLogged = true;
             callback(response);
-            $state.go('all')
+            $rootScope.$broadcast('userLoggedIn');
+            $state.go('all');
             //TODO add user to local storage and check for data
 
         }, function errorCallback(response) {
@@ -6179,6 +6151,10 @@ app.factory('authService', ['$http', '$state', function ($http, $state) {
     authService.loginUser = function (authData, callback) {
         if (authData.remember) {
             localStorage.setItem('user', JSON.stringify(authData));
+        } else {
+            if(user){
+                localStorage.removeItem('user');
+            }
         }
         $http({
             method: 'post',
@@ -6188,10 +6164,9 @@ app.factory('authService', ['$http', '$state', function ($http, $state) {
             user = authData;
             isLogged = true;
             callback(response);
+            $rootScope.$broadcast('userLoggedIn');
             $state.go('all');
             console.log(response);
-            //TODO add userTodos to local storage
-
         }, function errorCallback(response) {
             callback(response);
         });
@@ -6212,7 +6187,6 @@ app.factory('authService', ['$http', '$state', function ($http, $state) {
     authService.logOut = function () {
         user = null;
         localStorage.removeItem('user');
-        //localStorage.removeItem('allTodos');
         $state.go('auth');
     };
 
@@ -53941,19 +53915,19 @@ module.exports = "<div class=\"container\">\r\n    <div class=\"row\">\r\n      
 /* 38 */
 /***/ function(module, exports) {
 
-module.exports = "<section class=\"auth\">\r\n\r\n    <form class=\"auth-form\">\r\n        <h3>Please, log in or sign in</h3>\r\n        <div class=\"form-group\">\r\n            <input type=\"text\" class=\"auth-form-input\" ng-model=\"authCtrl.user.login\" placeholder=\"input your login\">\r\n        </div>\r\n\r\n        <div ng-show=\"authCtrl.show\" class=\"error-auth\">{{authCtrl.responseText}}</div>\r\n        <div class=\"form-group\">\r\n            <input type=\"password\"  class=\"auth-form-input\" ng-model=\"authCtrl.user.password\" placeholder=\"input your password\">\r\n        </div>\r\n        <div class=\"checkbox\">\r\n            <input type=\"checkbox\" id=\"remember\"\r\n                   ng-model=\"authCtrl.user.remember\"\r\n                   ng-checked=\"authCtrl.user.remember\"><label for=\"remember\">Remember me</label>\r\n        </div>\r\n        <button type=\"submit\" class=\"btn btn-info btn-lg\" ng-click=\"authCtrl.createNewUser($event)\">Sign Up</button>\r\n        <button type=\"submit\" class=\"btn btn-success  btn-lg btn-logIn\" ng-click=\"authCtrl.loginUser($event)\">Log In</button>\r\n    </form>\r\n</section>";
+module.exports = "<section class=\"auth\">\r\n    <form class=\"auth-form\">\r\n        <h3>Please, log in or sign in</h3>\r\n        <div class=\"form-group\">\r\n            <input type=\"text\" class=\"auth-form-input\" ng-model=\"authCtrl.user.login\" placeholder=\"input your login\">\r\n        </div>\r\n\r\n        <div ng-show=\"authCtrl.show\" class=\"error-auth\">{{authCtrl.responseText}}</div>\r\n        <div class=\"form-group\">\r\n            <input type=\"password\"  class=\"auth-form-input\" ng-model=\"authCtrl.user.password\" placeholder=\"input your password\">\r\n        </div>\r\n        <div class=\"checkbox\">\r\n            <input type=\"checkbox\" id=\"remember\"\r\n                   ng-model=\"authCtrl.user.remember\"\r\n                   ng-checked=\"authCtrl.user.remember\"><label for=\"remember\">Remember me</label>\r\n        </div>\r\n        <button type=\"submit\" class=\"btn btn-info btn-lg\" ng-click=\"authCtrl.createNewUser($event)\">Sign Up</button>\r\n        <button type=\"submit\" class=\"btn btn-success  btn-lg btn-logIn\" ng-click=\"authCtrl.loginUser($event)\">Log In</button>\r\n    </form>\r\n</section>";
 
 /***/ },
 /* 39 */
 /***/ function(module, exports) {
 
-module.exports = "<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-offset-4 col-sm-4\">\r\n            <form class=\"todo-form\" ng-submit=\"editCtrl.updateTodo($event)\">\r\n                {{}}\r\n                <div class=\"form-group\">\r\n                    <label for=\"title\">Title</label>\r\n                    <input type=\"text\" id=\"title\" class=\"form-control\" name=\"title\" ng-model=\"editCtrl.todo.title\"\r\n                           placeholder=\"todo title\">\r\n                </div>\r\n\r\n                <div class=\"form-group\">\r\n                    <label for=\"todoDescription\">Description</label>\r\n                    <textarea class=\"form-control\" id=\"todoDescription\" rows=\"3\" placeholder=\"Description\"\r\n                              ng-model=\"editCtrl.todo.description\"></textarea>\r\n                </div>\r\n                <div class=\"form-group\">\r\n                    <label for=\"datepicker\">Deadline date</label>\r\n                    <input type=\"text\" id=\"datepicker\" class=\"form-control\" ng-model=\"editCtrl.todo.deadline\"\r\n                           placeholder=\"todo deadline\" mydatepicker/>\r\n                </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"status\">Status</label>\r\n                        <div class=\"select\" id=\"status\">\r\n                            <select ng-model=\"editCtrl.statusId\" class=\"form-control\">\r\n                                <option ng-repeat=\"column in editCtrl.columns\" value=\"{{column.id}}\">{{column.name}}</option>\r\n                            </select>\r\n                        </div>\r\n                    </div>\r\n                <div class=\"checkbox\">\r\n                    <input type=\"checkbox\" id=\"isUrgent\" name=\"isUrgent\"\r\n                           ng-model=\"editCtrl.todo.isUrgent\"\r\n                           ng-checked=\"editCtrl.todo.isUrgent\"><label for=\"isUrgent\">Срочный </label>\r\n                </div>\r\n\r\n                <button type=\"submit\" class=\"btn btn-success\">Save todo</button>\r\n                <button ng-click=\"editCtrl.cancelEditing()\" class=\"btn btn-primary toRight\">Cancel</button>\r\n            </form>\r\n        </div>\r\n\r\n    </div>\r\n</div>";
+module.exports = "<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-offset-4 col-sm-4\">\r\n            <form class=\"todo-form\" ng-submit=\"editCtrl.updateTodo($event)\">\r\n                <div class=\"form-group\">\r\n                    <label for=\"title\">Title</label>\r\n                    <input type=\"text\" id=\"title\" class=\"form-control\" name=\"title\" ng-model=\"editCtrl.todo.title\"\r\n                           placeholder=\"todo title\">\r\n                </div>\r\n                <div class=\"form-group\">\r\n                    <label for=\"todoDescription\">Description</label>\r\n                    <textarea class=\"form-control\" id=\"todoDescription\" rows=\"3\" placeholder=\"Description\"\r\n                              ng-model=\"editCtrl.todo.description\"></textarea>\r\n                </div>\r\n                <div class=\"form-group\">\r\n                    <label for=\"datepicker\">Deadline date</label>\r\n                    <input type=\"text\" id=\"datepicker\" class=\"form-control\" ng-model=\"editCtrl.todo.deadline\"\r\n                           placeholder=\"todo deadline\" mydatepicker/>\r\n                </div>\r\n                <div class=\"form-group\">\r\n                    <label for=\"status\">Status</label>\r\n                    <div class=\"select\" id=\"status\">\r\n                        <select ng-model=\"editCtrl.statusId\" class=\"form-control\">\r\n                            <option ng-repeat=\"column in editCtrl.columns\" value=\"{{column.id}}\">{{column.name}}\r\n                            </option>\r\n                        </select>\r\n                    </div>\r\n                </div>\r\n                <div class=\"checkbox\">\r\n                    <input type=\"checkbox\" id=\"isUrgent\" name=\"isUrgent\"\r\n                           ng-model=\"editCtrl.todo.isUrgent\"\r\n                           ng-checked=\"editCtrl.todo.isUrgent\"><label for=\"isUrgent\">Срочный </label>\r\n                </div>\r\n\r\n                <button type=\"submit\" class=\"btn btn-success\">Save todo</button>\r\n                <button ng-click=\"editCtrl.cancelEditing()\" class=\"btn btn-primary toRight\">Cancel</button>\r\n            </form>\r\n        </div>\r\n    </div>\r\n</div>";
 
 /***/ },
 /* 40 */
 /***/ function(module, exports) {
 
-module.exports = "<div class=\"container-fluid\">\r\n    <div class=\"row filtersRow\">\r\n            <todo-filters></todo-filters>\r\n    </div>\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-6 col-md-3\" ng-repeat=\"column in columns  track by $index\">\r\n            <div class=\"column\"  data-drop=\"true\" data-jqyoui-options=\"{revert: 'invalid'}\" jqyoui-droppable=\"{multiple:true, onDrop:'dropCallback(column)'}\">\r\n                <todo-column></todo-column>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>";
+module.exports = "<div class=\"container-fluid\">\r\n    <div class=\"row filtersRow\">\r\n        <todo-filters></todo-filters>\r\n    </div>\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-6 col-md-3\" ng-repeat=\"column in columns  track by $index\">\r\n            <div class=\"column\" data-drop=\"true\" data-jqyoui-options=\"{revert: 'invalid'}\"\r\n                 jqyoui-droppable=\"{multiple:true, onDrop:'dropCallback(column)'}\">\r\n                <todo-column></todo-column>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>";
 
 /***/ },
 /* 41 */
@@ -53965,7 +53939,7 @@ module.exports = "<nav class=\"navbar navbar-default\">\r\n    <div class=\"cont
 /* 42 */
 /***/ function(module, exports) {
 
-module.exports = "<h2 class='columnTitle'>{{column.name}}</h2><ul><li class='todo' ng-repeat='todo in getTodos(column)  | orderBy: getOrderParam() track by $index'><one-todo todo='todo' columns='columns' ></one-todo></li></ul>\r\n\r\n";
+module.exports = "<h2 class='columnTitle'>{{column.name}}</h2>\r\n<ul>\r\n    <li class='todo' ng-repeat='todo in getTodos(column)  | orderBy: getOrderParam() track by $index'>\r\n        <one-todo todo='todo' columns='columns'></one-todo>\r\n    </li>\r\n</ul>\r\n\r\n";
 
 /***/ },
 /* 43 */
@@ -53977,13 +53951,12 @@ module.exports = "<div class=\"col-sm-12\">\r\n    <div class=\"row\">\r\n      
 /* 44 */
 /***/ function(module, exports) {
 
-module.exports = "<section class=\"todoWrapper\" data-id=\"{{todo.id}}\" data-drag=\"true\" jqyoui-draggable=\"{animate:true,}\" data-jqyoui-options=\"{revert: 'invalid'}\" ng-class=\"{urgent:todo.isUrgent}\" ng-show=\"todoCtrl.showTodo(todo)\">\r\n\r\n    <uib-accordion close-others=\"oneAtATime\">\r\n        <div uib-accordion-group class=\"panel-default\"\r\n             is-open=\"status.isFirstOpen\">\r\n            <div uib-accordion-heading>\r\n                <div class=\"row\">\r\n                    <div class=\"col-xs-2 interact-icons\">\r\n                        <a ui-sref=\"edittodo({id:todo.id})\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a>\r\n                    </div>\r\n                    <div class=\"col-xs-8\">\r\n                        <div class=\"mainWrapper\">\r\n                            <div class=\"title\">{{todo.title}}</div>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"col-xs-2 interact-icons delete\">\r\n                        <i class=\"fa fa-times\" aria-hidden=\"true\" ng-click=\"todoCtrl.deleteTodo(todo)\"></i>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                    <h2>Deadline</h2>\r\n                    <p class=\"deadlineTodo\">{{todo.deadline}}</p>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-6\">\r\n                    <div class=\"checkbox\">\r\n                        <input type=\"checkbox\" class=\"oneTodocheckbox\" ng-click=\"todoCtrl.makeUrgent($event,todo)\"\r\n                               ng-checked='todo.isUrgent'>\r\n                        <span class=\"oneTodoLabel\">Urgent </span>\r\n                    </div>\r\n                </div>\r\n                <div class=\"col-sm-6\">\r\n                    <div class=\"select\">\r\n                        <select ng-model=\"todoCtrl.column\" class=\"form-control\"\r\n                                ng-change=\"todoCtrl.selectChanged(todoCtrl.column,todo)\">\r\n                            <option ng-repeat=\"column in columns\" value=\"{{column.id}}\">{{column.name}}</option>\r\n                        </select>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                    <h2>Descriptrion:</h2>\r\n                    <p>{{todo.description}}</p>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </uib-accordion>\r\n\r\n\r\n</section>";
+module.exports = "<section class=\"todoWrapper\" data-id=\"{{todo.id}}\" data-drag=\"true\" jqyoui-draggable=\"{animate:true,}\" data-jqyoui-options=\"{revert: 'invalid'}\" ng-class=\"{urgent:todo.isUrgent}\" ng-show=\"todoCtrl.showTodo(todo)\">\r\n\r\n    <uib-accordion close-others=\"oneAtATime\">\r\n        <div uib-accordion-group class=\"panel-default\"\r\n             is-open=\"status.isFirstOpen\">\r\n            <div uib-accordion-heading>\r\n                <div class=\"row\">\r\n                    <div class=\"col-xs-2 interact-icons\">\r\n                        <a ui-sref=\"edittodo({id:todo.id})\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a>\r\n                    </div>\r\n                    <div class=\"col-xs-8\">\r\n                        <div class=\"mainWrapper\">\r\n                            <div class=\"title\">{{todo.title}}</div>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"col-xs-2 interact-icons delete\">\r\n                        <i class=\"fa fa-times\" aria-hidden=\"true\" ng-click=\"todoCtrl.deleteTodo(todo)\"></i>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                    <h2>Deadline</h2>\r\n                    <p class=\"deadlineTodo\">{{todo.deadline}}</p>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-6\">\r\n                    <div class=\"checkbox\">\r\n                        <input type=\"checkbox\" class=\"oneTodocheckbox\" ng-click=\"todoCtrl.makeUrgent($event,todo)\"\r\n                               ng-checked='todo.isUrgent'>\r\n                        <span class=\"oneTodoLabel\">Urgent </span>\r\n                    </div>\r\n                </div>\r\n                <div class=\"col-sm-6\">\r\n                    <div class=\"select\">\r\n                        <select ng-model=\"todoCtrl.column\" class=\"form-control\"\r\n                                ng-change=\"todoCtrl.selectChanged(todoCtrl.column,todo)\">\r\n                            <option ng-repeat=\"column in columns\" value=\"{{column.id}}\">{{column.name}}</option>\r\n                        </select>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                    <h2>Descriptrion:</h2>\r\n                    <p>{{todo.description}}</p>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </uib-accordion>\r\n\r\n</section>";
 
 /***/ },
 /* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
-//require("jquery");
 __webpack_require__(20);
 __webpack_require__(19);
 __webpack_require__(17);

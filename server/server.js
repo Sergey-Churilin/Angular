@@ -1,37 +1,36 @@
 //Set up mongoose connection
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 // var mongoDB = 'mongodb://wunderlist:wunderlist@ds029735.mlab.com:29735/wunderlist';
-var mongoDB = 'mongodb://wunderlistapp:wunderlistapp@ds119380.mlab.com:19380/wunderlistapp';
+const mongoDB = 'mongodb://wunderlistapp:wunderlistapp@ds119380.mlab.com:19380/wunderlistapp';
 mongoose.connect(mongoDB);
-var db = mongoose.connection;
+const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 /////////////////////////
 
-var express = require('express');
-var bodyParser = require('body-parser');
-var path = require('path');
-var userModel = require('./database.js');
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
+const userModel = require('./database.js');
 
-var app = express();
+const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, '../')));
 
 
 app.post('/addtodo', function (req, res) {
-    var data = req.body;
+    const data = req.body;
 
     userModel.findOne({userLogin: data.user.login}, function (err, user) {
         if (err) {
-            console.log('no id')
+            console.log('error add new todo')
         }
         if (user) {
             user.userTodos.push(data.todo);
             user.save(function (err, newUser) {
                 if (err) {
-                    console.log('error saving');
+                    console.log('error in saving todo during adding todo');
                 } else {
-                    console.log('success saving');
                     res.send('User successfully created')
                 }
             });
@@ -42,20 +41,17 @@ app.post('/addtodo', function (req, res) {
 });
 
 app.post('/adduser', function (req, res) {
-    var data = req.body;
+    const data = req.body;
     userModel.findOne({userLogin: data.login}, function (err, user) {
-        if (err) {
-            console.log('no id')
-        }
+
         if (user) {
             res.status(403).send('User with this login already exist');
         } else {
-            var newUser = new userModel({'userLogin': data.login, 'userPassword': data.pass});
+            const newUser = new userModel({'userLogin': data.login, 'userPassword': data.pass});
             newUser.save(function (err, newUser) {
                 if (err) {
-                    console.log('error saving');
+                    console.log('error to add new user');
                 } else {
-                    console.log('success saving');
                     res.send('User successfully created')
                 }
             });
@@ -64,10 +60,10 @@ app.post('/adduser', function (req, res) {
 });
 
 app.post('/loginuser', function (req, res) {
-    var data = req.body;
+    const data = req.body;
     userModel.findOne({userLogin: data.login}, function (err, user) {
         if (err) {
-            console.log('no id')
+            console.log('error in logging user')
         }
         if (user) {
             if (data.pass === user.userPassword) {
@@ -83,17 +79,19 @@ app.post('/loginuser', function (req, res) {
 });
 
 app.post('/updatetodo', function (req, res) {
-    var data = req.body;
+    const data = req.body;
     userModel.findOne({userLogin: data.user.login}, function (err, user) {
         // Handle any possible database errors
         if (err) {
             res.status(500).send(err);
-            console.log('no user')
+            console.log('error in updating todo')
         } else {
-            if(user){
+            if (user) {
                 const currentTodo = data.todo;
-                const todoToUpdate = user.userTodos.find( (todo) => {return todo.id === currentTodo.id})
-                if(todoToUpdate){
+                const todoToUpdate = user.userTodos.find((todo) => {
+                    return todo.id === currentTodo.id
+                });
+                if (todoToUpdate) {
                     todoToUpdate.title = currentTodo.title || todoToUpdate.title;
                     todoToUpdate.description = currentTodo.description || todoToUpdate.description;
                     todoToUpdate.isUrgent = currentTodo.isUrgent;
@@ -102,15 +100,13 @@ app.post('/updatetodo', function (req, res) {
                     todoToUpdate.deadline = currentTodo.deadline;
                     todoToUpdate.deadlineTimestamp = currentTodo.deadlineTimestamp;
 
-                    // Save the updated document back to the database
-                    // console.log('todoToUpdate.statusId = '+todoToUpdate.statusId);
                     user.markModified('userTodos');
                     user.save(function (err, user) {
                         if (err) {
-                            console.log('save error');
+                            console.log('error in saving updated todo');
                             res.status(500).send(err)
                         }
-                        console.log("updated successfully")
+                        console.log("updated successfully");
                         res.send(todoToUpdate);
                     });
                 }
@@ -120,10 +116,10 @@ app.post('/updatetodo', function (req, res) {
 });
 
 app.post('/getdata', function (req, res) {
-    var data = req.body;
+    const data = req.body;
     userModel.findOne({userLogin: data.login}, function (err, user) {
         if (err) {
-            console.log('no id')
+            console.log('can not get data from db')
         }
         if (user) {
             // console.log('user = ' + user);
@@ -135,33 +131,30 @@ app.post('/getdata', function (req, res) {
 });
 
 app.post('/deletedata', function (req, res) {
-    var data = req.body;
+    const data = req.body;
     userModel.findOne({userLogin: data.user.login}, function (err, user) {
         if (err) {
-            console.log('no id')
+            console.log('error in deleting data')
         }
         if (user) {
 
             const currentTodo = data.todo;
-            const todoToDelete = user.userTodos.find( (todo) => {
-               return todo.id === currentTodo.id
+            const todoToDelete = user.userTodos.find((todo) => {
+                return todo.id === currentTodo.id
             });
             const indexOfTodo = user.userTodos.indexOf(todoToDelete);
-            if(indexOfTodo >=0){
-                user.userTodos.splice(indexOfTodo,1);
+            if (indexOfTodo >= 0) {
+                user.userTodos.splice(indexOfTodo, 1);
                 user.save(function (err, user) {
                     if (err) {
-                        console.log('save error');
+                        console.log('error in deleting data');
                         res.status(500).send(err)
                     }
-                    console.log("deleted successfully")
                     res.send("deleted successfully");
                 });
             }
-
-
         } else {
-            console.log("can not deletedata");
+            console.log('error in deleting data');
             res.status(403).send('User with this login does not exist');
         }
     });

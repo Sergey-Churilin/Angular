@@ -1,7 +1,6 @@
-var app = require('../app.js');
+const app = require('../app.js');
 
 app.controller('AddTodoController',['$state','$rootScope','todoService',function ($state,$rootScope,todoService) {
-    // this.enabled =  (this.todo && this.todo.title) !='';
 
     this.isDisabledDate = function(currentDate, mode) {
         return mode === 'day' && (currentDate.getDay() === 0 || currentDate.getDay() === 6);
@@ -23,11 +22,3 @@ app.controller('AddTodoController',['$state','$rootScope','todoService',function
         $state.go($rootScope.previousState.name)
     };
 }]);
-
-/*app.directive('addTodo',function () {
-    return {
-        controller:'AddTodoController',
-        controllerAs:"addTodoCtrl",
-        template: require("./add-todo-template.html")
-    }
-});*/

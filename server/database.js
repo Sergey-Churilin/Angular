@@ -3,9 +3,9 @@ const Schema = mongoose.Schema;
 
 const UserSchema = new Schema(
     {
-        userLogin: {type: String,dropDups: true},
+        userLogin: {type: String, dropDups: true},
         userPassword: {type: String},
-        userTodos : {type:Array}
+        userTodos: {type: Array}
     }
 );
 

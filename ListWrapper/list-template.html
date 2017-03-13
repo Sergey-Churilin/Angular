@@ -1,10 +1,11 @@
 <div class="container-fluid">
     <div class="row filtersRow">
-            <todo-filters></todo-filters>
+        <todo-filters></todo-filters>
     </div>
     <div class="row">
         <div class="col-sm-6 col-md-3" ng-repeat="column in columns  track by $index">
-            <div class="column"  data-drop="true" data-jqyoui-options="{revert: 'invalid'}" jqyoui-droppable="{multiple:true, onDrop:'dropCallback(column)'}">
+            <div class="column" data-drop="true" data-jqyoui-options="{revert: 'invalid'}"
+                 jqyoui-droppable="{multiple:true, onDrop:'dropCallback(column)'}">
                 <todo-column></todo-column>
             </div>
         </div>
